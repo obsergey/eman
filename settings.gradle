@@ -1,0 +1,3 @@
+include('dept')
+include('contact')
+include('payment')
