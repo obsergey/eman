@@ -2,7 +2,6 @@ package org.osergey.dept.web;
 
 import org.osergey.dept.model.DeptErrorResponse;
 import org.osergey.dept.service.DeptNotFoundException;
-import org.osergey.dept.service.EmployeeNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,13 +19,6 @@ public class DeptExceptionController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(DeptNotFoundException.class)
     public DeptErrorResponse notFoundDept(DeptNotFoundException exception) {
-        log.error(exception.getMessage(), exception);
-        return new DeptErrorResponse(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EmployeeNotFoundException.class)
-    public DeptErrorResponse notFoundEmployee(EmployeeNotFoundException exception) {
         log.error(exception.getMessage(), exception);
         return new DeptErrorResponse(exception.getMessage());
     }

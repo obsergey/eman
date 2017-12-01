@@ -20,7 +20,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private Employee findChecked(int id, int dept) {
         Employee entity = employeeRepository.findOne(id);
         if(entity == null || entity.getDept().getId() != dept) {
-            throw new EntityNotFoundException("EmployeeResponse {" + id + "} not found in { " + dept + " } department");
+            throw new DeptNotFoundException(id, dept);
         }
         return entity;
     }
