@@ -9,8 +9,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-
 @Service("localEmployeeService")
 @ConditionalOnProperty("dept.micro.service")
 public class EmployeeServiceImpl implements EmployeeService {
