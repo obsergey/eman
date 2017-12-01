@@ -1,4 +1,4 @@
-package org.osergey.contact;
+package org.osergey.contact.test;
 
 import org.junit.Before;
 import org.junit.Test;

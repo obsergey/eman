@@ -1,4 +1,4 @@
-package org.osergey.payment;
+package org.osergey.payment.test;
 
 import org.junit.Before;
 import org.junit.Test;

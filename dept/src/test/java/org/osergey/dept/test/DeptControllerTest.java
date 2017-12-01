@@ -1,4 +1,4 @@
-package org.osergey.dept;
+package org.osergey.dept.test;
 
 import org.junit.Before;
 import org.junit.Test;
