@@ -7,11 +7,11 @@ import org.osergey.contact.domain.ContactEntity;
 
 @Data
 @NoArgsConstructor
-public class Contact {
+public class ContactResponse {
     private String name;
     private String phone;
 
-    public Contact(ContactEntity contact) {
+    public ContactResponse(ContactEntity contact) {
         name = contact.getName();
         phone = contact.getPhone();
     }

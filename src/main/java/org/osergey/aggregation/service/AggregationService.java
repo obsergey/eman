@@ -1,16 +1,17 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.aggregation.model.DeptDetail;
-import org.osergey.aggregation.model.DeptLabel;
-import org.osergey.aggregation.model.EmployeeFull;
+import org.osergey.aggregation.model.DeptDetailResponse;
+import org.osergey.aggregation.model.DeptLabelResponse;
+import org.osergey.aggregation.model.EmployeeFullResponse;
+import org.osergey.aggregation.model.EmployeeFullRequest;
 
 import java.util.List;
 
 public interface AggregationService {
-    List<DeptLabel> findAllDeptLabel(int page, int size);
-    DeptDetail findOneDeptDetail(int id);
-    EmployeeFull findOneEmployee(int id, int dept);
-    int appendEmployee(int dept, EmployeeFull employee);
-    EmployeeFull updateEmployee(int id, int dept, EmployeeFull employee);
+    List<DeptLabelResponse> findAllDeptLabel(int page, int size);
+    DeptDetailResponse findOneDeptDetail(int id);
+    EmployeeFullResponse findOneEmployee(int id, int dept);
+    int appendEmployee(int dept, EmployeeFullRequest employee);
+    EmployeeFullResponse updateEmployee(int id, int dept, EmployeeFullRequest employee);
     void removeEmployee(int id, int dept);
 }

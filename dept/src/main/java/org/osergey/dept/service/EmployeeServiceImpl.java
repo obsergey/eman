@@ -1,7 +1,8 @@
 package org.osergey.dept.service;
 
 import org.osergey.dept.domain.EmployeeEntitiy;
-import org.osergey.dept.model.Employee;
+import org.osergey.dept.model.EmployeeResponse;
+import org.osergey.dept.model.EmployeeRequest;
 import org.osergey.dept.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,19 +21,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeEntitiy findChecked(int id, int dept) {
         EmployeeEntitiy entity = employeeRepository.findOne(id);
         if(entity == null || entity.getDept().getId() != dept) {
-            throw new EntityNotFoundException("Employee {" + id + "} not found in { " + dept + " } department");
+            throw new EntityNotFoundException("EmployeeResponse {" + id + "} not found in { " + dept + " } department");
         }
         return entity;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Employee findOne(int id, int dept) {
-        return new Employee(findChecked(id, dept));
+    public EmployeeResponse findOne(int id, int dept) {
+        return new EmployeeResponse(findChecked(id, dept));
     }
 
     @Override
-    public EmployeeEntitiy create(Employee employee) {
+    public EmployeeEntitiy create(EmployeeRequest employee) {
         EmployeeEntitiy entity = new EmployeeEntitiy();
         entity.setName(employee.getName());
         entity.setPosition(employee.getPosition());
@@ -40,11 +41,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee update(int id, int dept, Employee employee) {
+    public EmployeeResponse update(int id, int dept, EmployeeRequest employee) {
         EmployeeEntitiy entity = findChecked(id, dept);
         entity.setName(employee.getName() != null ? employee.getName() : entity.getName());
         entity.setPosition(employee.getPosition() != null ? employee.getPosition() : entity.getPosition());
-        return new Employee(entity);
+        return new EmployeeResponse(entity);
     }
 
     @Override

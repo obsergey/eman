@@ -1,6 +1,7 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.contact.model.Contact;
+import org.osergey.contact.model.ContactResponse;
+import org.osergey.contact.model.ContactRequest;
 import org.osergey.contact.service.ContactService;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -22,18 +23,18 @@ public class ContactServiceRemote implements ContactService{
     }
 
     @Override
-    public Contact findOne(int id) {
-        return rest.getForObject(contactOne, Contact.class, id);
+    public ContactResponse findOne(int id) {
+        return rest.getForObject(contactOne, ContactResponse.class, id);
     }
 
     @Override
-    public Contact create(int id, Contact contact) {
-        return rest.getForObject("http://localhost:8082" + rest.postForLocation(contactOne, contact, id), Contact.class);
+    public ContactResponse create(int id, ContactRequest contact) {
+        return rest.getForObject("http://localhost:8082" + rest.postForLocation(contactOne, contact, id), ContactResponse.class);
     }
 
     @Override
-    public Contact update(int id, Contact contact) {
-        return rest.patchForObject(contactOne, contact, Contact.class, id);
+    public ContactResponse update(int id, ContactRequest contact) {
+        return rest.patchForObject(contactOne, contact, ContactResponse.class, id);
     }
 
     @Override

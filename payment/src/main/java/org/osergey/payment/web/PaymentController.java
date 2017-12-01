@@ -1,6 +1,7 @@
 package org.osergey.payment.web;
 
-import org.osergey.payment.model.Payment;
+import org.osergey.payment.model.PaymentResponse;
+import org.osergey.payment.model.PaymentRequest;
 import org.osergey.payment.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +26,14 @@ public class PaymentController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public Payment findOne(@PathVariable int id) {
+    public PaymentResponse findOne(@PathVariable int id) {
         log.info("GET /payment/" + id);
         return paymentService.findOne(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, value = "/{id}")
-    public void create(@PathVariable int id, @RequestBody Payment payment, HttpServletResponse response) {
+    public void create(@PathVariable int id, @RequestBody PaymentRequest payment, HttpServletResponse response) {
         log.info("POST /payment/" + id + " payment " + payment);
         paymentService.create(id, payment);
         response.addHeader(HttpHeaders.LOCATION, "/payment/" + id);
@@ -40,7 +41,7 @@ public class PaymentController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.PATCH, value = "/{id}")
-    public Payment update(@PathVariable int id, @RequestBody Payment payment) {
+    public PaymentResponse update(@PathVariable int id, @RequestBody PaymentRequest payment) {
         log.info("PATCH /payment/" + id + " payment " + payment);
         return paymentService.update(id, payment);
     }

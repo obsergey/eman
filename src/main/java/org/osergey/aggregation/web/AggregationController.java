@@ -1,8 +1,9 @@
 package org.osergey.aggregation.web;
 
-import org.osergey.aggregation.model.DeptDetail;
-import org.osergey.aggregation.model.DeptLabel;
-import org.osergey.aggregation.model.EmployeeFull;
+import org.osergey.aggregation.model.DeptDetailResponse;
+import org.osergey.aggregation.model.DeptLabelResponse;
+import org.osergey.aggregation.model.EmployeeFullResponse;
+import org.osergey.aggregation.model.EmployeeFullRequest;
 import org.osergey.aggregation.service.AggregationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,28 +25,28 @@ public class AggregationController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
-    public List<DeptLabel> findAllDeptLabel(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public List<DeptLabelResponse> findAllDeptLabel(@RequestParam("page") int page, @RequestParam("size") int size) {
         log.info("GET /dept/ page " + page + " size " + size);
         return aggregationService.findAllDeptLabel(page, size);
     }
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public DeptDetail findOneDeptDetail(@PathVariable int id) {
+    public DeptDetailResponse findOneDeptDetail(@PathVariable int id) {
         log.info("GET /dept/" + id);
         return aggregationService.findOneDeptDetail(id);
     }
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/{dept}/employee/{id}")
-    public EmployeeFull findOneEmployee(@PathVariable int id, @PathVariable int dept) {
+    public EmployeeFullResponse findOneEmployee(@PathVariable int id, @PathVariable int dept) {
         log.info("GET /dept/" + dept + "/employee/" + id);
         return aggregationService.findOneEmployee(id, dept);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, value = "/{dept}/employee")
-    public void appendEmployee(@PathVariable int dept, @RequestBody EmployeeFull employee, HttpServletResponse response) {
+    public void appendEmployee(@PathVariable int dept, @RequestBody EmployeeFullRequest employee, HttpServletResponse response) {
         log.info("POST /dept/" + dept + "/employee/ employee " + employee);
         int id = aggregationService.appendEmployee(dept, employee);
         response.addHeader(HttpHeaders.LOCATION, "/dept/"+dept+"/employee/"+id);
@@ -53,7 +54,7 @@ public class AggregationController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.PATCH, value = "/{dept}/employee/{id}")
-    public EmployeeFull updateEmployee(@PathVariable int id, @PathVariable int dept, @RequestBody EmployeeFull employee) {
+    public EmployeeFullResponse updateEmployee(@PathVariable int id, @PathVariable int dept, @RequestBody EmployeeFullRequest employee) {
         log.info("PATCH /dept/" + dept + "/employee/" + id + "employee" + employee);
         return aggregationService.updateEmployee(id, dept, employee);
     }

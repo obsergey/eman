@@ -1,7 +1,7 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.dept.model.Dept;
-import org.osergey.dept.model.Employee;
+import org.osergey.dept.model.DeptResponse;
+import org.osergey.dept.model.EmployeeRequest;
 import org.osergey.dept.service.DeptService;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -35,17 +35,17 @@ public class DeptServiceRemote implements DeptService {
     }
 
     @Override
-    public List<Dept> findAll(int page, int size) {
-        return Arrays.asList(rest.getForObject(deptPage, Dept[].class, page, size));
+    public List<DeptResponse> findAll(int page, int size) {
+        return Arrays.asList(rest.getForObject(deptPage, DeptResponse[].class, page, size));
     }
 
     @Override
-    public Dept findOne(int id) {
-        return rest.getForObject(deptOne, Dept.class, id);
+    public DeptResponse findOne(int id) {
+        return rest.getForObject(deptOne, DeptResponse.class, id);
     }
 
     @Override
-    public int appendEmployee(int id, Employee employee) {
+    public int appendEmployee(int id, EmployeeRequest employee) {
         return lastSegmentInt(rest.postForLocation(empRoot, employee, id));
     }
 

@@ -7,11 +7,11 @@ import org.osergey.payment.domain.PaymentEntity;
 
 @Data
 @NoArgsConstructor
-public class Payment {
+public class PaymentResponse {
     private int salary;
     private String account;
 
-    public Payment(PaymentEntity payment) {
+    public PaymentResponse(PaymentEntity payment) {
         salary = payment.getSalary();
         account = payment.getAccount();
     }

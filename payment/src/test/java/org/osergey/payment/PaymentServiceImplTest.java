@@ -5,7 +5,8 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osergey.payment.domain.PaymentEntity;
-import org.osergey.payment.model.Payment;
+import org.osergey.payment.model.PaymentResponse;
+import org.osergey.payment.model.PaymentRequest;
 import org.osergey.payment.repository.PaymentRepository;
 import org.osergey.payment.service.PaymentService;
 import org.osergey.payment.service.PaymentServiceImpl;
@@ -40,7 +41,7 @@ public class PaymentServiceImplTest {
         PaymentService paymentService = new PaymentServiceImpl();
         ReflectionTestUtils.setField(paymentService, "paymentRepository", paymentRepository);
 
-        Payment payment = paymentService.findOne(1);
+        PaymentResponse payment = paymentService.findOne(1);
         assertEquals(800, payment.getSalary());
         assertEquals("00-12-12-12-WQ", payment.getAccount());
     }
@@ -65,7 +66,11 @@ public class PaymentServiceImplTest {
         PaymentService paymentService = new PaymentServiceImpl();
         ReflectionTestUtils.setField(paymentService, "paymentRepository", paymentRepository);
 
-        Payment payment = paymentService.create(2, new Payment(paymentEntity));
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setSalary(1200);
+        paymentRequest.setAccount("00-12-32-22-HG");
+
+        PaymentResponse payment = paymentService.create(2, paymentRequest);
         assertEquals(2, payments.size());
         assertEquals(1200, payment.getSalary());
         assertEquals("00-12-32-22-HG", payment.getAccount());
@@ -91,7 +96,11 @@ public class PaymentServiceImplTest {
         PaymentService paymentService = new PaymentServiceImpl();
         ReflectionTestUtils.setField(paymentService, "paymentRepository", paymentRepository);
 
-        Payment contact = paymentService.update(1, new Payment(paymentEntity));
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setSalary(1800);
+        paymentRequest.setAccount("33-33-33-FR");
+
+        PaymentResponse contact = paymentService.update(1, paymentRequest);
         assertEquals(1800, contact.getSalary());
         assertEquals("33-33-33-FR", contact.getAccount());
         verify(paymentRepository).save(paymentEntity);

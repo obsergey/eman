@@ -1,13 +1,13 @@
 package org.osergey.dept.service;
 
-import org.osergey.dept.model.Dept;
-import org.osergey.dept.model.Employee;
+import org.osergey.dept.model.DeptResponse;
+import org.osergey.dept.model.EmployeeRequest;
 
 import java.util.List;
 
 public interface DeptService {
-    List<Dept> findAll(int page, int size);
-    Dept findOne(int id);
-    int  appendEmployee(int id, Employee employee);
+    List<DeptResponse> findAll(int page, int size);
+    DeptResponse findOne(int id);
+    int  appendEmployee(int id, EmployeeRequest employee);
     void removeEmployee(int id, int employeeId);
 }

@@ -2,24 +2,23 @@ package org.osergey.aggregation.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.osergey.dept.model.Dept;
+import org.osergey.dept.model.DeptResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class DeptDetail {
+public class DeptDetailResponse {
     private String name;
     private String description;
-    private List<EmployeePublic> employees;
+    private List<EmployeePublicResponse> employees;
 
-    public DeptDetail(Dept dept) {
+    public DeptDetailResponse(DeptResponse dept) {
         name = dept.getName();
         description = dept.getDescription();
         if(dept.getEmployees() != null) {
-            employees = dept.getEmployees().stream().map(EmployeePublic::new).collect(Collectors.toList());
+            employees = dept.getEmployees().stream().map(EmployeePublicResponse::new).collect(Collectors.toList());
         }
     }
 }

@@ -1,15 +1,14 @@
 package org.osergey.aggregation.model;
 
 import lombok.Data;
-import lombok.ToString;
-import org.osergey.dept.model.Employee;
+import org.osergey.dept.model.EmployeeResponse;
 
 @Data
-public class EmployeePublic {
+public class EmployeePublicResponse {
     private String name;
     private String position;
 
-    public EmployeePublic(Employee employee) {
+    public EmployeePublicResponse(EmployeeResponse employee) {
         name = employee.getName();
         position = employee.getPosition();
     }

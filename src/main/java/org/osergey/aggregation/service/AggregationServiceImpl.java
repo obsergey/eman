@@ -1,14 +1,12 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.aggregation.model.DeptDetail;
-import org.osergey.aggregation.model.DeptLabel;
-import org.osergey.aggregation.model.EmployeeFull;
-import org.osergey.contact.model.Contact;
+import org.osergey.aggregation.model.DeptDetailResponse;
+import org.osergey.aggregation.model.DeptLabelResponse;
+import org.osergey.aggregation.model.EmployeeFullResponse;
+import org.osergey.aggregation.model.EmployeeFullRequest;
 import org.osergey.contact.service.ContactService;
-import org.osergey.dept.model.Employee;
 import org.osergey.dept.service.DeptService;
 import org.osergey.dept.service.EmployeeService;
-import org.osergey.payment.model.Payment;
 import org.osergey.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,37 +31,37 @@ public class AggregationServiceImpl implements AggregationService {
     PaymentService paymentService;
 
     @Override
-    public List<DeptLabel> findAllDeptLabel(int page, int size) {
-        return deptService.findAll(page, size).stream().map(DeptLabel::new).collect(Collectors.toList());
+    public List<DeptLabelResponse> findAllDeptLabel(int page, int size) {
+        return deptService.findAll(page, size).stream().map(DeptLabelResponse::new).collect(Collectors.toList());
     }
 
     @Override
-    public DeptDetail findOneDeptDetail(int id) {
-        return new DeptDetail(deptService.findOne(id));
+    public DeptDetailResponse findOneDeptDetail(int id) {
+        return new DeptDetailResponse(deptService.findOne(id));
     }
 
     @Override
-    public EmployeeFull findOneEmployee(int id, int dept) {
-        return new EmployeeFull(
+    public EmployeeFullResponse findOneEmployee(int id, int dept) {
+        return new EmployeeFullResponse(
                 employeeService.findOne(id, dept),
                 contactService.findOne(id),
                 paymentService.findOne(id));
     }
 
     @Override
-    public int appendEmployee(int dept, EmployeeFull employee) {
-        int id = deptService.appendEmployee(dept, employee.toEmployee());
-        contactService.create(id, employee.toContact());
-        paymentService.create(id, employee.toPayment());
+    public int appendEmployee(int dept, EmployeeFullRequest employee) {
+        int id = deptService.appendEmployee(dept, employee.toEmployeeRequest());
+        contactService.create(id, employee.toContactRequest());
+        paymentService.create(id, employee.toPaymentRequest());
         return id;
     }
 
     @Override
-    public EmployeeFull updateEmployee(int id, int dept, EmployeeFull employee) {
-        return new EmployeeFull(
-                employeeService.update(id, dept, employee.toEmployee()),
-                contactService.update(id, employee.toContact()),
-                paymentService.update(id, employee.toPayment()));
+    public EmployeeFullResponse updateEmployee(int id, int dept, EmployeeFullRequest employee) {
+        return new EmployeeFullResponse(
+                employeeService.update(id, dept, employee.toEmployeeRequest()),
+                contactService.update(id, employee.toContactRequest()),
+                paymentService.update(id, employee.toPaymentRequest()));
     }
 
     @Override

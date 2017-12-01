@@ -1,10 +1,11 @@
 package org.osergey.payment.service;
 
-import org.osergey.payment.model.Payment;
+import org.osergey.payment.model.PaymentResponse;
+import org.osergey.payment.model.PaymentRequest;
 
 public interface PaymentService {
-    Payment findOne(int id);
-    Payment create(int id, Payment payment);
-    Payment update(int id, Payment payment);
+    PaymentResponse findOne(int id);
+    PaymentResponse create(int id, PaymentRequest payment);
+    PaymentResponse update(int id, PaymentRequest payment);
     void delete(int id);
 }

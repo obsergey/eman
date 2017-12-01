@@ -5,7 +5,8 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osergey.contact.domain.ContactEntity;
-import org.osergey.contact.model.Contact;
+import org.osergey.contact.model.ContactResponse;
+import org.osergey.contact.model.ContactRequest;
 import org.osergey.contact.repository.ContactRepository;
 import org.osergey.contact.service.ContactService;
 import org.osergey.contact.service.ContactServiceImpl;
@@ -27,7 +28,7 @@ public class ContactServiceImplTest {
     public void initContacts() {
         ContactEntity contact = new ContactEntity();
         contact.setId(1);
-        contact.setName("Test Contact");
+        contact.setName("Test ContactResponse");
         contact.setPhone("00-12-12-12");
         contacts.add(contact);
     }
@@ -40,8 +41,8 @@ public class ContactServiceImplTest {
         ContactService contactService = new ContactServiceImpl();
         ReflectionTestUtils.setField(contactService, "contactRepository", contactRepository);
 
-        Contact contact = contactService.findOne(1);
-        assertEquals("Test Contact", contact.getName());
+        ContactResponse contact = contactService.findOne(1);
+        assertEquals("Test ContactResponse", contact.getName());
         assertEquals("00-12-12-12", contact.getPhone());
     }
 
@@ -49,7 +50,7 @@ public class ContactServiceImplTest {
     public void testCreate() throws Exception {
         ContactEntity newContactEntity = new ContactEntity();
         newContactEntity.setId(2);
-        newContactEntity.setName("New Contact");
+        newContactEntity.setName("New ContactResponse");
         newContactEntity.setPhone("00-12-32-22");
 
         ContactRepository contactRepository = mock(ContactRepository.class);
@@ -65,9 +66,13 @@ public class ContactServiceImplTest {
         ContactService contactService = new ContactServiceImpl();
         ReflectionTestUtils.setField(contactService, "contactRepository", contactRepository);
 
-        Contact contact = contactService.create(2, new Contact(newContactEntity));
+        ContactRequest contactRequest = new ContactRequest();
+        contactRequest.setName("New ContactResponse");
+        contactRequest.setPhone("00-12-32-22");
+
+        ContactResponse contact = contactService.create(2, contactRequest);
         assertEquals(2, contacts.size());
-        assertEquals("New Contact", contact.getName());
+        assertEquals("New ContactResponse", contact.getName());
         assertEquals("00-12-32-22", contact.getPhone());
     }
 
@@ -75,7 +80,7 @@ public class ContactServiceImplTest {
     public void testUpdate() throws Exception {
         ContactEntity updContactEntity = new ContactEntity();
         updContactEntity.setId(1);
-        updContactEntity.setName("Updated Contact");
+        updContactEntity.setName("Updated ContactResponse");
         updContactEntity.setPhone("33-33-33");
 
         ContactRepository contactRepository = mock(ContactRepository.class);
@@ -91,8 +96,12 @@ public class ContactServiceImplTest {
         ContactService contactService = new ContactServiceImpl();
         ReflectionTestUtils.setField(contactService, "contactRepository", contactRepository);
 
-        Contact contact = contactService.update(1, new Contact(updContactEntity));
-        assertEquals("Updated Contact", contact.getName());
+        ContactRequest contactRequest = new ContactRequest();
+        contactRequest.setName("Updated ContactResponse");
+        contactRequest.setPhone("33-33-33");
+
+        ContactResponse contact = contactService.update(1, contactRequest);
+        assertEquals("Updated ContactResponse", contact.getName());
         assertEquals("33-33-33", contact.getPhone());
         verify(contactRepository).save(updContactEntity);
     }

@@ -2,8 +2,8 @@ package org.osergey.dept.service;
 
 import org.osergey.dept.domain.DeptEntity;
 import org.osergey.dept.domain.EmployeeEntitiy;
-import org.osergey.dept.model.Dept;
-import org.osergey.dept.model.Employee;
+import org.osergey.dept.model.DeptResponse;
+import org.osergey.dept.model.EmployeeRequest;
 import org.osergey.dept.repository.DeptRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,23 +28,23 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Dept> findAll(int page, int size) {
+    public List<DeptResponse> findAll(int page, int size) {
         return deptRepository.findAll(new PageRequest(page, size))
-                .getContent().stream().map(Dept::new).collect(Collectors.toList());
+                .getContent().stream().map(DeptResponse::new).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Dept findOne(int id) {
+    public DeptResponse findOne(int id) {
         DeptEntity entity = deptRepository.findOne(id);
         if(entity == null) {
             throw new EntityNotFoundException("Deportment {" + id + "} not found");
         }
-        return Dept.deep(entity);
+        return DeptResponse.deep(entity);
     }
 
     @Override
-    public int appendEmployee(int id, Employee employee) {
+    public int appendEmployee(int id, EmployeeRequest employee) {
         DeptEntity entity = deptRepository.findOne(id);
         if(entity == null) {
             throw new EntityNotFoundException("Deportment {" + id + "} not found");

@@ -4,7 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.osergey.contact.model.Contact;
+import org.osergey.contact.model.ContactResponse;
+import org.osergey.contact.model.ContactRequest;
 import org.osergey.contact.service.ContactService;
 import org.osergey.contact.web.ContactController;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -20,12 +21,12 @@ import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
 
 public class ContactControllerTest {
-    private final List<Contact> contacts = new ArrayList<>();
+    private final List<ContactResponse> contacts = new ArrayList<>();
 
     @Before
     public void initContacts() {
-        Contact contact = new Contact();
-        contact.setName("Test Contact");
+        ContactResponse contact = new ContactResponse();
+        contact.setName("Test ContactResponse");
         contact.setPhone("00-12-12-12");
         contacts.add(contact);
     }
@@ -38,23 +39,26 @@ public class ContactControllerTest {
         ContactController contactController = new ContactController();
         ReflectionTestUtils.setField(contactController, "contactService", contactService);
 
-        Contact contact = contactController.findOne(1);
-        assertEquals("Test Contact", contact.getName());
+        ContactResponse contact = contactController.findOne(1);
+        assertEquals("Test ContactResponse", contact.getName());
         assertEquals("00-12-12-12", contact.getPhone());
     }
 
     @Test
     public void testCreate() throws Exception {
-        final Contact newContact = new Contact();
-        newContact.setName("New Contact");
+        final ContactRequest newContact = new ContactRequest();
+        newContact.setName("New ContactResponse");
         newContact.setPhone("11-22-33-44-55-66");
 
         ContactService contactService = mock(ContactService.class);
-        when(contactService.create(1, newContact)).thenAnswer(new Answer<Contact>() {
+        when(contactService.create(1, newContact)).thenAnswer(new Answer<ContactResponse>() {
             @Override
-            public Contact answer(InvocationOnMock invocation) throws Throwable {
-                contacts.add(newContact);
-                return newContact;
+            public ContactResponse answer(InvocationOnMock invocation) throws Throwable {
+                ContactResponse contact = new ContactResponse();
+                contact.setName(newContact.getName());
+                contact.setPhone(newContact.getPhone());
+                contacts.add(contact);
+                return contact;
             }
         });
 
@@ -65,21 +69,21 @@ public class ContactControllerTest {
         contactController.create(1, newContact, responce);
         assertEquals("/contact/1", responce.getHeader("Location"));
         assertEquals(2, contacts.size());
-        assertEquals("New Contact", contacts.get(1).getName());
+        assertEquals("New ContactResponse", contacts.get(1).getName());
         assertEquals("11-22-33-44-55-66", contacts.get(1).getPhone());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        final Contact updContact = new Contact();
+        final ContactRequest updContact = new ContactRequest();
         updContact.setName("Updated Name");
         updContact.setPhone("00-00-99-00");
 
         ContactService contactService = mock(ContactService.class);
-        when(contactService.update(0, updContact)).thenAnswer(new Answer<Contact>() {
+        when(contactService.update(0, updContact)).thenAnswer(new Answer<ContactResponse>() {
             @Override
-            public Contact answer(InvocationOnMock invocation) throws Throwable {
-                Contact cur = contacts.get(0);
+            public ContactResponse answer(InvocationOnMock invocation) throws Throwable {
+                ContactResponse cur = contacts.get(0);
                 cur.setName(updContact.getName());
                 cur.setPhone(updContact.getPhone());
                 return cur;
@@ -89,7 +93,7 @@ public class ContactControllerTest {
         ContactController contactController = new ContactController();
         ReflectionTestUtils.setField(contactController, "contactService", contactService);
 
-        Contact ret = contactController.update(0, updContact);
+        ContactResponse ret = contactController.update(0, updContact);
         assertEquals("Updated Name", ret.getName());
         assertEquals("00-00-99-00", ret.getPhone());
     }

@@ -2,16 +2,15 @@ package org.osergey.aggregation.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.osergey.dept.model.Dept;
+import org.osergey.dept.model.DeptResponse;
 
 @Data
 @NoArgsConstructor
-public class DeptLabel {
+public class DeptLabelResponse {
     private String name;
     private String description;
 
-    public DeptLabel(Dept dept) {
+    public DeptLabelResponse(DeptResponse dept) {
         name = dept.getName();
         description = dept.getDescription();
     }

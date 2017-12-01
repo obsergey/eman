@@ -1,7 +1,8 @@
 package org.osergey.payment.service;
 
 import org.osergey.payment.domain.PaymentEntity;
-import org.osergey.payment.model.Payment;
+import org.osergey.payment.model.PaymentResponse;
+import org.osergey.payment.model.PaymentRequest;
 import org.osergey.payment.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,31 +21,31 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Payment findOne(int id) {
-        return new Payment(paymentRepository.findOne(id));
+    public PaymentResponse findOne(int id) {
+        return new PaymentResponse(paymentRepository.findOne(id));
     }
 
     @Override
-    public Payment create(int id, Payment payment) {
+    public PaymentResponse create(int id, PaymentRequest payment) {
         if(paymentRepository.exists(id)) {
-            throw new EntityExistsException("Payment {" + id + "} already exists");
+            throw new EntityExistsException("PaymentResponse {" + id + "} already exists");
         }
         PaymentEntity entity = new PaymentEntity();
         entity.setId(id);
         entity.setSalary(payment.getSalary());
         entity.setAccount(payment.getAccount());
-        return new Payment(paymentRepository.save(entity));
+        return new PaymentResponse(paymentRepository.save(entity));
     }
 
     @Override
-    public Payment update(int id, Payment payment) {
+    public PaymentResponse update(int id, PaymentRequest payment) {
         PaymentEntity entity = paymentRepository.findOne(id);
         if(entity == null) {
-            throw new EntityNotFoundException("Payment {" + id + "} not found");
+            throw new EntityNotFoundException("PaymentResponse {" + id + "} not found");
         }
         entity.setSalary(payment.getSalary() > 0 ? payment.getSalary() : entity.getSalary());
         entity.setAccount(payment.getAccount() != null ? payment.getAccount() : entity.getAccount());
-        return new Payment(paymentRepository.save(entity));
+        return new PaymentResponse(paymentRepository.save(entity));
     }
 
     @Override

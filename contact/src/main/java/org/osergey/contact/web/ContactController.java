@@ -1,6 +1,7 @@
 package org.osergey.contact.web;
 
-import org.osergey.contact.model.Contact;
+import org.osergey.contact.model.ContactResponse;
+import org.osergey.contact.model.ContactRequest;
 import org.osergey.contact.service.ContactService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +26,14 @@ public class ContactController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public Contact findOne(@PathVariable int id) {
+    public ContactResponse findOne(@PathVariable int id) {
         log.info("GET /contact/" + id);
         return contactService.findOne(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, value = "/{id}")
-    public void create(@PathVariable int id, @RequestBody Contact contact, HttpServletResponse response) {
+    public void create(@PathVariable int id, @RequestBody ContactRequest contact, HttpServletResponse response) {
         log.info("POST /contact/" + id + " contact " + contact);
         contactService.create(id, contact);
         response.addHeader(HttpHeaders.LOCATION, "/contact/" + id);
@@ -40,7 +41,7 @@ public class ContactController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.PATCH, value = "/{id}")
-    public Contact update(@PathVariable int id, @RequestBody Contact contact) {
+    public ContactResponse update(@PathVariable int id, @RequestBody ContactRequest contact) {
         log.info("PATH /contact/" + id + " contact " + contact);
         return contactService.update(id, contact);
     }

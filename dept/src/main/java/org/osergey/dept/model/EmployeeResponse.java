@@ -7,11 +7,11 @@ import org.osergey.dept.domain.EmployeeEntitiy;
 
 @Data
 @NoArgsConstructor
-public class Employee {
+public class EmployeeResponse {
     private String name;
     private String position;
 
-    public Employee(EmployeeEntitiy employee) {
+    public EmployeeResponse(EmployeeEntitiy employee) {
         name = employee.getName();
         position = employee.getPosition();
     }

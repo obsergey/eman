@@ -1,6 +1,7 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.payment.model.Payment;
+import org.osergey.payment.model.PaymentResponse;
+import org.osergey.payment.model.PaymentRequest;
 import org.osergey.payment.service.PaymentService;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -22,18 +23,18 @@ public class PaymentServiceRemote implements PaymentService {
     }
 
     @Override
-    public Payment findOne(int id) {
-        return rest.getForObject(paymentOne, Payment.class, id);
+    public PaymentResponse findOne(int id) {
+        return rest.getForObject(paymentOne, PaymentResponse.class, id);
     }
 
     @Override
-    public Payment create(int id, Payment payment) {
-        return rest.getForObject("http://localhost:8083" + rest.postForLocation(paymentOne, payment, id), Payment.class);
+    public PaymentResponse create(int id, PaymentRequest payment) {
+        return rest.getForObject("http://localhost:8083" + rest.postForLocation(paymentOne, payment, id), PaymentResponse.class);
     }
 
     @Override
-    public Payment update(int id, Payment payment) {
-        return rest.patchForObject(paymentOne, payment, Payment.class, id);
+    public PaymentResponse update(int id, PaymentRequest payment) {
+        return rest.patchForObject(paymentOne, payment, PaymentResponse.class, id);
     }
 
     @Override
