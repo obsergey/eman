@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class DeptLabelListPageResponse {
-    AggPaginationResponse pagination;
-    List<DeptLabelResponse> deptLabels;
+    private AggPaginationResponse pagination;
+    private List<DeptLabelResponse> deptLabels;
 
     public DeptLabelListPageResponse(DeptListPageResponse response) {
         pagination = new AggPaginationResponse(response.getPagination());

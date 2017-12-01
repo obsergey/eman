@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class DeptListPageResponse {
-    PaginationResponse pagination;
-    List<DeptResponse> depts;
+    private PaginationResponse pagination;
+    private List<DeptResponse> depts;
 }

@@ -7,9 +7,9 @@ import org.osergey.dept.model.PaginationResponse;
 @Data
 @NoArgsConstructor
 public class AggPaginationResponse {
-    long total;
-    int pages;
-    int current;
+    private long total;
+    private int pages;
+    private int current;
 
     public AggPaginationResponse(PaginationResponse pagination) {
         total = pagination.getTotal();

@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PaginationResponse {
-    long total;
-    int pages;
-    int current;
+    private long total;
+    private int pages;
+    private int current;
 
     public PaginationResponse(long count, int page, int size) {
         total = count;
