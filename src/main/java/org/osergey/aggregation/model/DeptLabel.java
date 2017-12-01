@@ -7,7 +7,6 @@ import org.osergey.dept.model.Dept;
 
 @Data
 @NoArgsConstructor
-@ToString
 public class DeptLabel {
     private String name;
     private String description;

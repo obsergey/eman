@@ -7,7 +7,6 @@ import org.osergey.payment.domain.PaymentEntity;
 
 @Data
 @NoArgsConstructor
-@ToString
 public class Payment {
     private int salary;
     private String account;

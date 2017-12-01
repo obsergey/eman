@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-@ToString
 public class Dept {
     private String name;
     private String description;

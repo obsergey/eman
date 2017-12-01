@@ -7,7 +7,6 @@ import org.osergey.dept.domain.EmployeeEntitiy;
 
 @Data
 @NoArgsConstructor
-@ToString
 public class Employee {
     private String name;
     private String position;

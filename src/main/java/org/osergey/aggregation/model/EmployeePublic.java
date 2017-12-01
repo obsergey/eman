@@ -5,7 +5,6 @@ import lombok.ToString;
 import org.osergey.dept.model.Employee;
 
 @Data
-@ToString
 public class EmployeePublic {
     private String name;
     private String position;

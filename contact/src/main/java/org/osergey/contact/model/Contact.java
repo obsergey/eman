@@ -7,7 +7,6 @@ import org.osergey.contact.domain.ContactEntity;
 
 @Data
 @NoArgsConstructor
-@ToString
 public class Contact {
     private String name;
     private String phone;
