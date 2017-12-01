@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PaymentRequest {
-    private int salary;
+    private Integer salary;
     private String account;
 }

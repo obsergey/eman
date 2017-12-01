@@ -46,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse update(int id, PaymentRequest payment) {
         Payment entity = findChecked(id);
-        entity.setSalary(payment.getSalary() > 0 ? payment.getSalary() : entity.getSalary());
+        entity.setSalary(payment.getSalary() != null ? payment.getSalary() : entity.getSalary());
         entity.setAccount(payment.getAccount() != null ? payment.getAccount() : entity.getAccount());
         return new PaymentResponse(paymentRepository.save(entity));
     }
