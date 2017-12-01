@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "payment", schema = "payment")
-public class PaymentEntity {
+public class Payment {
     @Id
     @Column(name = "id")
     private int id;

@@ -2,8 +2,7 @@ package org.osergey.payment.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.osergey.payment.domain.PaymentEntity;
+import org.osergey.payment.domain.Payment;
 
 @Data
 @NoArgsConstructor
@@ -11,7 +10,7 @@ public class PaymentResponse {
     private int salary;
     private String account;
 
-    public PaymentResponse(PaymentEntity payment) {
+    public PaymentResponse(Payment payment) {
         salary = payment.getSalary();
         account = payment.getAccount();
     }

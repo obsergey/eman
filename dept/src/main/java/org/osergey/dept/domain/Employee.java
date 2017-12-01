@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "dept", schema = "employee")
-public class EmployeeEntitiy {
+public class Employee {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,7 @@ public class EmployeeEntitiy {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dept")
-    private DeptEntity dept;
+    private Dept dept;
 
     @Column(name = "name")
     private String name;

@@ -2,7 +2,7 @@ package org.osergey.dept.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.osergey.dept.domain.DeptEntity;
+import org.osergey.dept.domain.Dept;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,12 +14,12 @@ public class DeptResponse {
     private String description;
     private List<EmployeeResponse> employees;
 
-    public DeptResponse(DeptEntity dept) {
+    public DeptResponse(Dept dept) {
         name = dept.getName();
         description = dept.getDescription();
     }
 
-    public static DeptResponse deep(DeptEntity dept) {
+    public static DeptResponse deep(Dept dept) {
         DeptResponse ret = new DeptResponse(dept);
         ret.setEmployees(dept.getEmployees().stream().map(EmployeeResponse::new).collect(Collectors.toList()));
         return ret;

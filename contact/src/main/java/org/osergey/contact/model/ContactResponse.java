@@ -2,8 +2,7 @@ package org.osergey.contact.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.osergey.contact.domain.ContactEntity;
+import org.osergey.contact.domain.Contact;
 
 @Data
 @NoArgsConstructor
@@ -11,7 +10,7 @@ public class ContactResponse {
     private String name;
     private String phone;
 
-    public ContactResponse(ContactEntity contact) {
+    public ContactResponse(Contact contact) {
         name = contact.getName();
         phone = contact.getPhone();
     }

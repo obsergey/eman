@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.osergey.payment.domain.PaymentEntity;
+import org.osergey.payment.domain.Payment;
 import org.osergey.payment.model.PaymentResponse;
 import org.osergey.payment.model.PaymentRequest;
 import org.osergey.payment.repository.PaymentRepository;
@@ -22,11 +22,11 @@ import static org.mockito.Mockito.when;
 
 public class PaymentServiceImplTest {
 
-    private final List<PaymentEntity> payments = new ArrayList<>();
+    private final List<Payment> payments = new ArrayList<>();
 
     @Before
     public void initContacts() {
-        PaymentEntity payment = new PaymentEntity();
+        Payment payment = new Payment();
         payment.setId(1);
         payment.setSalary(800);
         payment.setAccount("00-12-12-12-WQ");
@@ -48,15 +48,15 @@ public class PaymentServiceImplTest {
 
     @Test
     public void testCreate() throws Exception {
-        PaymentEntity paymentEntity = new PaymentEntity();
+        Payment paymentEntity = new Payment();
         paymentEntity.setId(2);
         paymentEntity.setSalary(1200);
         paymentEntity.setAccount("00-12-32-22-HG");
 
         PaymentRepository paymentRepository = mock(PaymentRepository.class);
-        when(paymentRepository.save(paymentEntity)).thenAnswer(new Answer<PaymentEntity>() {
+        when(paymentRepository.save(paymentEntity)).thenAnswer(new Answer<Payment>() {
             @Override
-            public PaymentEntity answer(InvocationOnMock invocation) throws Throwable {
+            public Payment answer(InvocationOnMock invocation) throws Throwable {
                 paymentEntity.setId(2);
                 payments.add(paymentEntity);
                 return paymentEntity;
@@ -78,17 +78,17 @@ public class PaymentServiceImplTest {
 
     @Test
     public void testUpdate() throws Exception {
-        PaymentEntity paymentEntity = new PaymentEntity();
-        paymentEntity.setId(1);
-        paymentEntity.setSalary(1800);
-        paymentEntity.setAccount("33-33-33-FR");
+        Payment payment = new Payment();
+        payment.setId(1);
+        payment.setSalary(1800);
+        payment.setAccount("33-33-33-FR");
 
         PaymentRepository paymentRepository = mock(PaymentRepository.class);
         when(paymentRepository.findOne(1)).thenReturn(payments.get(0));
-        when(paymentRepository.save(paymentEntity)).thenAnswer(new Answer<PaymentEntity>() {
+        when(paymentRepository.save(payment)).thenAnswer(new Answer<Payment>() {
             @Override
-            public PaymentEntity answer(InvocationOnMock invocation) throws Throwable {
-                payments.set(0, paymentEntity);
+            public Payment answer(InvocationOnMock invocation) throws Throwable {
+                payments.set(0, payment);
                 return payments.get(0);
             }
         });
@@ -103,7 +103,7 @@ public class PaymentServiceImplTest {
         PaymentResponse contact = paymentService.update(1, paymentRequest);
         assertEquals(1800, contact.getSalary());
         assertEquals("33-33-33-FR", contact.getAccount());
-        verify(paymentRepository).save(paymentEntity);
+        verify(paymentRepository).save(payment);
     }
 
     @Test

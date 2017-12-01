@@ -1,6 +1,6 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.dept.domain.EmployeeEntitiy;
+import org.osergey.dept.domain.Employee;
 import org.osergey.dept.model.EmployeeResponse;
 import org.osergey.dept.model.EmployeeRequest;
 import org.osergey.dept.service.EmployeeService;
@@ -30,7 +30,7 @@ public class EmployeeServiceRemote implements EmployeeService {
     }
 
     @Override
-    public EmployeeEntitiy create(EmployeeRequest employee) {
+    public Employee create(EmployeeRequest employee) {
         throw new NotImplementedException();
     }
 

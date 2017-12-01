@@ -1,6 +1,6 @@
 package org.osergey.payment.service;
 
-import org.osergey.payment.domain.PaymentEntity;
+import org.osergey.payment.domain.Payment;
 import org.osergey.payment.model.PaymentResponse;
 import org.osergey.payment.model.PaymentRequest;
 import org.osergey.payment.repository.PaymentRepository;
@@ -30,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
         if(paymentRepository.exists(id)) {
             throw new EntityExistsException("PaymentResponse {" + id + "} already exists");
         }
-        PaymentEntity entity = new PaymentEntity();
+        Payment entity = new Payment();
         entity.setId(id);
         entity.setSalary(payment.getSalary());
         entity.setAccount(payment.getAccount());
@@ -39,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponse update(int id, PaymentRequest payment) {
-        PaymentEntity entity = paymentRepository.findOne(id);
+        Payment entity = paymentRepository.findOne(id);
         if(entity == null) {
             throw new EntityNotFoundException("PaymentResponse {" + id + "} not found");
         }

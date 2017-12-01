@@ -1,7 +1,7 @@
 package org.osergey.dept.service;
 
-import org.osergey.dept.domain.DeptEntity;
-import org.osergey.dept.domain.EmployeeEntitiy;
+import org.osergey.dept.domain.Dept;
+import org.osergey.dept.domain.Employee;
 import org.osergey.dept.model.DeptResponse;
 import org.osergey.dept.model.EmployeeRequest;
 import org.osergey.dept.repository.DeptRepository;
@@ -36,7 +36,7 @@ public class DeptServiceImpl implements DeptService {
     @Override
     @Transactional(readOnly = true)
     public DeptResponse findOne(int id) {
-        DeptEntity entity = deptRepository.findOne(id);
+        Dept entity = deptRepository.findOne(id);
         if(entity == null) {
             throw new EntityNotFoundException("Deportment {" + id + "} not found");
         }
@@ -45,11 +45,11 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public int appendEmployee(int id, EmployeeRequest employee) {
-        DeptEntity entity = deptRepository.findOne(id);
+        Dept entity = deptRepository.findOne(id);
         if(entity == null) {
             throw new EntityNotFoundException("Deportment {" + id + "} not found");
         }
-        EmployeeEntitiy emp = employeeService.create(employee);
+        Employee emp = employeeService.create(employee);
         emp.setDept(entity);
         return  emp.getId();
     }

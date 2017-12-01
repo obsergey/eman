@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.osergey.contact.domain.ContactEntity;
+import org.osergey.contact.domain.Contact;
 import org.osergey.contact.model.ContactResponse;
 import org.osergey.contact.model.ContactRequest;
 import org.osergey.contact.repository.ContactRepository;
@@ -22,11 +22,11 @@ import static org.mockito.Mockito.when;
 
 public class ContactServiceImplTest {
 
-    private final List<ContactEntity> contacts = new ArrayList<>();
+    private final List<Contact> contacts = new ArrayList<>();
 
     @Before
     public void initContacts() {
-        ContactEntity contact = new ContactEntity();
+        Contact contact = new Contact();
         contact.setId(1);
         contact.setName("Test ContactResponse");
         contact.setPhone("00-12-12-12");
@@ -48,18 +48,18 @@ public class ContactServiceImplTest {
 
     @Test
     public void testCreate() throws Exception {
-        ContactEntity newContactEntity = new ContactEntity();
-        newContactEntity.setId(2);
-        newContactEntity.setName("New ContactResponse");
-        newContactEntity.setPhone("00-12-32-22");
+        Contact newContact = new Contact();
+        newContact.setId(2);
+        newContact.setName("New ContactResponse");
+        newContact.setPhone("00-12-32-22");
 
         ContactRepository contactRepository = mock(ContactRepository.class);
-        when(contactRepository.save(newContactEntity)).thenAnswer(new Answer<ContactEntity>() {
+        when(contactRepository.save(newContact)).thenAnswer(new Answer<Contact>() {
             @Override
-            public ContactEntity answer(InvocationOnMock invocation) throws Throwable {
-                newContactEntity.setId(2);
-                contacts.add(newContactEntity);
-                return newContactEntity;
+            public Contact answer(InvocationOnMock invocation) throws Throwable {
+                newContact.setId(2);
+                contacts.add(newContact);
+                return newContact;
             }
         });
 
@@ -78,17 +78,17 @@ public class ContactServiceImplTest {
 
     @Test
     public void testUpdate() throws Exception {
-        ContactEntity updContactEntity = new ContactEntity();
-        updContactEntity.setId(1);
-        updContactEntity.setName("Updated ContactResponse");
-        updContactEntity.setPhone("33-33-33");
+        Contact updContact = new Contact();
+        updContact.setId(1);
+        updContact.setName("Updated ContactResponse");
+        updContact.setPhone("33-33-33");
 
         ContactRepository contactRepository = mock(ContactRepository.class);
         when(contactRepository.findOne(1)).thenReturn(contacts.get(0));
-        when(contactRepository.save(updContactEntity)).thenAnswer(new Answer<ContactEntity>() {
+        when(contactRepository.save(updContact)).thenAnswer(new Answer<Contact>() {
             @Override
-            public ContactEntity answer(InvocationOnMock invocation) throws Throwable {
-                contacts.set(0, updContactEntity);
+            public Contact answer(InvocationOnMock invocation) throws Throwable {
+                contacts.set(0, updContact);
                 return contacts.get(0);
             }
         });
@@ -103,7 +103,7 @@ public class ContactServiceImplTest {
         ContactResponse contact = contactService.update(1, contactRequest);
         assertEquals("Updated ContactResponse", contact.getName());
         assertEquals("33-33-33", contact.getPhone());
-        verify(contactRepository).save(updContactEntity);
+        verify(contactRepository).save(updContact);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package org.osergey.contact.service;
 
-import org.osergey.contact.domain.ContactEntity;
+import org.osergey.contact.domain.Contact;
 import org.osergey.contact.model.ContactResponse;
 import org.osergey.contact.model.ContactRequest;
 import org.osergey.contact.repository.ContactRepository;
@@ -30,7 +30,7 @@ public class ContactServiceImpl implements ContactService {
         if(contactRepository.exists(id)) {
             throw new EntityExistsException("ContactResponse {" + id + "} already exists");
         }
-        ContactEntity entity = new ContactEntity();
+        Contact entity = new Contact();
         entity.setId(id);
         entity.setName(contact.getName());
         entity.setPhone(contact.getPhone());
@@ -39,7 +39,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactResponse update(int id, ContactRequest contact) {
-        ContactEntity entity = contactRepository.findOne(id);
+        Contact entity = contactRepository.findOne(id);
         if(entity == null) {
             throw new EntityNotFoundException("Entity {" + id + "} not found");
         }

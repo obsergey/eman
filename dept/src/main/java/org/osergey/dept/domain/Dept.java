@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "dept", schema = "dept")
-public class DeptEntity {
+public class Dept {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -20,5 +20,5 @@ public class DeptEntity {
     private String description;
 
     @OneToMany(mappedBy = "dept")
-    List<EmployeeEntitiy> employees;
+    List<Employee> employees;
 }
