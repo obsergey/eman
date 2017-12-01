@@ -2,7 +2,6 @@ package org.osergey.contact;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osergey.contact.model.ContactResponse;
 import org.osergey.contact.model.ContactRequest;
@@ -51,23 +50,20 @@ public class ContactControllerTest {
         newContact.setPhone("11-22-33-44-55-66");
 
         ContactService contactService = mock(ContactService.class);
-        when(contactService.create(1, newContact)).thenAnswer(new Answer<ContactResponse>() {
-            @Override
-            public ContactResponse answer(InvocationOnMock invocation) throws Throwable {
-                ContactResponse contact = new ContactResponse();
-                contact.setName(newContact.getName());
-                contact.setPhone(newContact.getPhone());
-                contacts.add(contact);
-                return contact;
-            }
+        when(contactService.create(1, newContact)).thenAnswer((Answer<ContactResponse>) invocation -> {
+            ContactResponse contact = new ContactResponse();
+            contact.setName(newContact.getName());
+            contact.setPhone(newContact.getPhone());
+            contacts.add(contact);
+            return contact;
         });
 
         ContactController contactController = new ContactController();
         ReflectionTestUtils.setField(contactController, "contactService", contactService);
 
-        HttpServletResponse responce = new MockHttpServletResponse();
-        contactController.create(1, newContact, responce);
-        assertEquals("/contact/1", responce.getHeader("Location"));
+        HttpServletResponse response = new MockHttpServletResponse();
+        contactController.create(1, newContact, response);
+        assertEquals("/contact/1", response.getHeader("Location"));
         assertEquals(2, contacts.size());
         assertEquals("New ContactResponse", contacts.get(1).getName());
         assertEquals("11-22-33-44-55-66", contacts.get(1).getPhone());
@@ -80,14 +76,11 @@ public class ContactControllerTest {
         updContact.setPhone("00-00-99-00");
 
         ContactService contactService = mock(ContactService.class);
-        when(contactService.update(0, updContact)).thenAnswer(new Answer<ContactResponse>() {
-            @Override
-            public ContactResponse answer(InvocationOnMock invocation) throws Throwable {
-                ContactResponse cur = contacts.get(0);
-                cur.setName(updContact.getName());
-                cur.setPhone(updContact.getPhone());
-                return cur;
-            }
+        when(contactService.update(0, updContact)).thenAnswer((Answer<ContactResponse>) invocation -> {
+            ContactResponse cur = contacts.get(0);
+            cur.setName(updContact.getName());
+            cur.setPhone(updContact.getPhone());
+            return cur;
         });
 
         ContactController contactController = new ContactController();
@@ -98,6 +91,7 @@ public class ContactControllerTest {
         assertEquals("00-00-99-00", ret.getPhone());
     }
 
+    @Test
     public void testDelete() throws  Exception {
         ContactService contactService = mock(ContactService.class);
         ContactController contactController = new ContactController();

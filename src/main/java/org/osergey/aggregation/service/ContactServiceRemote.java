@@ -14,7 +14,7 @@ public class ContactServiceRemote implements ContactService{
 
     private static final String contactOne  = "http://localhost:8082/contact/{id}";
 
-    private RestTemplate rest = new RestTemplate();
+    private final RestTemplate rest = new RestTemplate();
 
     @PostConstruct
     public void fixPostMethod() {
