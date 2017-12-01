@@ -1,6 +1,7 @@
 package org.osergey.aggregation.web;
 
 import org.osergey.aggregation.service.PaginationBadArgumentsException;
+import org.osergey.aggregation.service.PostRequiredFieldException;
 import org.osergey.dept.model.DeptErrorResponse;
 import org.osergey.dept.service.DeptNotFoundException;
 import org.osergey.dept.web.DeptExceptionController;
@@ -29,7 +30,8 @@ public class AggregationExceptionController {
     @ExceptionHandler({
             HttpMessageNotReadableException.class,
             MethodArgumentNotValidException.class,
-            PaginationBadArgumentsException.class})
+            PaginationBadArgumentsException.class,
+            PostRequiredFieldException.class})
     public DeptErrorResponse badRequest(Exception exception) {
         log.error(exception.getMessage(), exception);
         return new DeptErrorResponse(exception.getMessage());

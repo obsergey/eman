@@ -24,6 +24,24 @@ public class AggregationServiceImpl implements AggregationService {
     @Qualifier("remotePaymentService")
     PaymentService paymentService;
 
+    private void checkEmployeeFullRequestPostRequiredField(EmployeeFullRequest employee) {
+        if(employee.getName() == null) {
+            throw new PostRequiredFieldException("name");
+        }
+        if(employee.getPosition() == null) {
+            throw new PostRequiredFieldException("position");
+        }
+        if(employee.getPhone() == null) {
+            throw new PostRequiredFieldException("phone");
+        }
+        if(employee.getSalary() == null) {
+            throw new PostRequiredFieldException("salary");
+        }
+        if(employee.getAccount() == null) {
+            throw new PostRequiredFieldException("account");
+        }
+    }
+
     @Override
     public DeptLabelListPageResponse findAllDeptLabel(int page, int size) {
         if(page < 0 || size <= 0) {
@@ -47,6 +65,7 @@ public class AggregationServiceImpl implements AggregationService {
 
     @Override
     public int appendEmployee(int dept, EmployeeFullRequest employee) {
+        checkEmployeeFullRequestPostRequiredField(employee);
         int id = deptService.appendEmployee(dept, employee.toEmployeeRequest());
         contactService.create(id, employee.toContactRequest());
         paymentService.create(id, employee.toPaymentRequest());
