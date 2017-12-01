@@ -1,5 +1,6 @@
 package org.osergey.dept.web;
 
+import org.osergey.dept.model.DeptListPageResponse;
 import org.osergey.dept.model.DeptResponse;
 import org.osergey.dept.model.EmployeeResponse;
 import org.osergey.dept.model.EmployeeRequest;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @RestController
 @RequestMapping("/idept")
@@ -32,7 +32,7 @@ public class DeptController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
-    public List<DeptResponse> findAllDept(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public DeptListPageResponse findAllDept(@RequestParam("page") int page, @RequestParam("size") int size) {
         log.info("GET /idept/ page " + page + "size " + size);
         return deptService.findAll(page, size);
     }

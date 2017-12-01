@@ -1,14 +1,9 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.aggregation.model.DeptDetailResponse;
-import org.osergey.aggregation.model.DeptLabelResponse;
-import org.osergey.aggregation.model.EmployeeFullResponse;
-import org.osergey.aggregation.model.EmployeeFullRequest;
-
-import java.util.List;
+import org.osergey.aggregation.model.*;
 
 public interface AggregationService {
-    List<DeptLabelResponse> findAllDeptLabel(int page, int size);
+    DeptLabelListPageResponse findAllDeptLabel(int page, int size);
     DeptDetailResponse findOneDeptDetail(int id);
     EmployeeFullResponse findOneEmployee(int id, int dept);
     int appendEmployee(int dept, EmployeeFullRequest employee);

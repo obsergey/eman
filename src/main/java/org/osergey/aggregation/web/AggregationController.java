@@ -1,9 +1,6 @@
 package org.osergey.aggregation.web;
 
-import org.osergey.aggregation.model.DeptDetailResponse;
-import org.osergey.aggregation.model.DeptLabelResponse;
-import org.osergey.aggregation.model.EmployeeFullResponse;
-import org.osergey.aggregation.model.EmployeeFullRequest;
+import org.osergey.aggregation.model.*;
 import org.osergey.aggregation.service.AggregationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @RestController
 @RequestMapping("/dept")
@@ -25,7 +21,7 @@ public class AggregationController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
-    public List<DeptLabelResponse> findAllDeptLabel(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public DeptLabelListPageResponse findAllDeptLabel(@RequestParam("page") int page, @RequestParam("size") int size) {
         log.info("GET /dept/ page " + page + " size " + size);
         return aggregationService.findAllDeptLabel(page, size);
     }

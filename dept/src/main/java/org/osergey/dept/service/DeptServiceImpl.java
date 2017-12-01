@@ -2,8 +2,10 @@ package org.osergey.dept.service;
 
 import org.osergey.dept.domain.Dept;
 import org.osergey.dept.domain.Employee;
+import org.osergey.dept.model.DeptListPageResponse;
 import org.osergey.dept.model.DeptResponse;
 import org.osergey.dept.model.EmployeeRequest;
+import org.osergey.dept.model.PaginationResponse;
 import org.osergey.dept.repository.DeptRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service("localDeptService")
@@ -28,9 +29,12 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DeptResponse> findAll(int page, int size) {
-        return deptRepository.findAll(new PageRequest(page, size))
-                .getContent().stream().map(DeptResponse::new).collect(Collectors.toList());
+    public DeptListPageResponse findAll(int page, int size) {
+        DeptListPageResponse ret = new DeptListPageResponse();
+        ret.setPagination(new PaginationResponse(deptRepository.count(), page, size));
+        ret.setDepts(deptRepository.findAll(new PageRequest(page, size))
+                .getContent().stream().map(DeptResponse::new).collect(Collectors.toList()));
+        return ret;
     }
 
     @Override

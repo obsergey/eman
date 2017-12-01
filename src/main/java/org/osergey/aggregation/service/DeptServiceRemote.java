@@ -1,5 +1,6 @@
 package org.osergey.aggregation.service;
 
+import org.osergey.dept.model.DeptListPageResponse;
 import org.osergey.dept.model.DeptResponse;
 import org.osergey.dept.model.EmployeeRequest;
 import org.osergey.dept.service.DeptService;
@@ -9,8 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
 @Service("remoteDeptService")
 public class DeptServiceRemote implements DeptService {
@@ -35,8 +34,8 @@ public class DeptServiceRemote implements DeptService {
     }
 
     @Override
-    public List<DeptResponse> findAll(int page, int size) {
-        return Arrays.asList(rest.getForObject(deptPage, DeptResponse[].class, page, size));
+    public DeptListPageResponse findAll(int page, int size) {
+        return rest.getForObject(deptPage, DeptListPageResponse.class, page, size);
     }
 
     @Override

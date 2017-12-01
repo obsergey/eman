@@ -1,9 +1,6 @@
 package org.osergey.aggregation.service;
 
-import org.osergey.aggregation.model.DeptDetailResponse;
-import org.osergey.aggregation.model.DeptLabelResponse;
-import org.osergey.aggregation.model.EmployeeFullResponse;
-import org.osergey.aggregation.model.EmployeeFullRequest;
+import org.osergey.aggregation.model.*;
 import org.osergey.contact.service.ContactService;
 import org.osergey.dept.service.DeptService;
 import org.osergey.dept.service.EmployeeService;
@@ -11,9 +8,6 @@ import org.osergey.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AggregationServiceImpl implements AggregationService {
@@ -31,8 +25,8 @@ public class AggregationServiceImpl implements AggregationService {
     PaymentService paymentService;
 
     @Override
-    public List<DeptLabelResponse> findAllDeptLabel(int page, int size) {
-        return deptService.findAll(page, size).stream().map(DeptLabelResponse::new).collect(Collectors.toList());
+    public DeptLabelListPageResponse findAllDeptLabel(int page, int size) {
+        return new DeptLabelListPageResponse(deptService.findAll(page, size));
     }
 
     @Override
