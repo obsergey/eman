@@ -2,7 +2,6 @@ package org.osergey.contact;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osergey.contact.domain.Contact;
 import org.osergey.contact.model.ContactResponse;
@@ -54,13 +53,10 @@ public class ContactServiceImplTest {
         newContact.setPhone("00-12-32-22");
 
         ContactRepository contactRepository = mock(ContactRepository.class);
-        when(contactRepository.save(newContact)).thenAnswer(new Answer<Contact>() {
-            @Override
-            public Contact answer(InvocationOnMock invocation) throws Throwable {
-                newContact.setId(2);
-                contacts.add(newContact);
-                return newContact;
-            }
+        when(contactRepository.save(newContact)).thenAnswer((Answer<Contact>) invocation -> {
+            newContact.setId(2);
+            contacts.add(newContact);
+            return newContact;
         });
 
         ContactService contactService = new ContactServiceImpl();
@@ -85,12 +81,9 @@ public class ContactServiceImplTest {
 
         ContactRepository contactRepository = mock(ContactRepository.class);
         when(contactRepository.findOne(1)).thenReturn(contacts.get(0));
-        when(contactRepository.save(updContact)).thenAnswer(new Answer<Contact>() {
-            @Override
-            public Contact answer(InvocationOnMock invocation) throws Throwable {
-                contacts.set(0, updContact);
-                return contacts.get(0);
-            }
+        when(contactRepository.save(updContact)).thenAnswer((Answer<Contact>) invocation -> {
+            contacts.set(0, updContact);
+            return contacts.get(0);
         });
 
         ContactService contactService = new ContactServiceImpl();

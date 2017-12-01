@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class AggregationServiceImpl implements AggregationService {
     @Autowired
-    @Qualifier("remoteDeptSerice")
+    @Qualifier("remoteDeptService")
     DeptService deptService;
     @Autowired
     @Qualifier("remoteEmployeeService")

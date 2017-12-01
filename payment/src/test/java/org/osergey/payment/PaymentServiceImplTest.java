@@ -2,7 +2,6 @@ package org.osergey.payment;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osergey.payment.domain.Payment;
 import org.osergey.payment.model.PaymentResponse;
@@ -54,13 +53,10 @@ public class PaymentServiceImplTest {
         paymentEntity.setAccount("00-12-32-22-HG");
 
         PaymentRepository paymentRepository = mock(PaymentRepository.class);
-        when(paymentRepository.save(paymentEntity)).thenAnswer(new Answer<Payment>() {
-            @Override
-            public Payment answer(InvocationOnMock invocation) throws Throwable {
-                paymentEntity.setId(2);
-                payments.add(paymentEntity);
-                return paymentEntity;
-            }
+        when(paymentRepository.save(paymentEntity)).thenAnswer((Answer<Payment>) invocation -> {
+            paymentEntity.setId(2);
+            payments.add(paymentEntity);
+            return paymentEntity;
         });
 
         PaymentService paymentService = new PaymentServiceImpl();
@@ -85,12 +81,9 @@ public class PaymentServiceImplTest {
 
         PaymentRepository paymentRepository = mock(PaymentRepository.class);
         when(paymentRepository.findOne(1)).thenReturn(payments.get(0));
-        when(paymentRepository.save(payment)).thenAnswer(new Answer<Payment>() {
-            @Override
-            public Payment answer(InvocationOnMock invocation) throws Throwable {
-                payments.set(0, payment);
-                return payments.get(0);
-            }
+        when(paymentRepository.save(payment)).thenAnswer((Answer<Payment>) invocation -> {
+            payments.set(0, payment);
+            return payments.get(0);
         });
 
         PaymentService paymentService = new PaymentServiceImpl();

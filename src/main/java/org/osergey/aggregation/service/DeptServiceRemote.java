@@ -12,7 +12,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-@Service("remoteDeptSerice")
+@Service("remoteDeptService")
 public class DeptServiceRemote implements DeptService {
 
     private static final String deptPage = "http://localhost:8081/idept?page={page}&size={size}";
@@ -20,7 +20,7 @@ public class DeptServiceRemote implements DeptService {
     private static final String empRoot  = "http://localhost:8081/idept/{dept}/employee";
     private static final String empOne   = "http://localhost:8081/idept/{dept}/employee/{id}";
 
-    private RestTemplate rest = new RestTemplate();
+    private final RestTemplate rest = new RestTemplate();
 
     @PostConstruct
     public void fixPostMethod() {

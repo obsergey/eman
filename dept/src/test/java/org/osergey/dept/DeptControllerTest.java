@@ -2,7 +2,6 @@ package org.osergey.dept;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osergey.dept.model.DeptResponse;
 import org.osergey.dept.model.EmployeeResponse;
@@ -19,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class DeptControllerTest {
-    final List<DeptResponse> depts = new ArrayList<>();
+    private final List<DeptResponse> depts = new ArrayList<>();
 
     @Before
     public void initDepts() {
@@ -43,7 +42,7 @@ public class DeptControllerTest {
     @Test
     public void findAllDept() {
         DeptService deptService = mock(DeptService.class);
-        List<DeptResponse> page = new ArrayList<DeptResponse>();
+        List<DeptResponse> page = new ArrayList<>();
         page.add(depts.get(0));
         when(deptService.findAll(0, 1)).thenReturn(page);
 
@@ -92,14 +91,11 @@ public class DeptControllerTest {
         employeeRequest.setPosition("Manager");
 
         EmployeeService employeeService = mock(EmployeeService.class);
-        when(employeeService.update(1, 1, employeeRequest)).thenAnswer(new Answer<EmployeeResponse>() {
-            @Override
-            public EmployeeResponse answer(InvocationOnMock invocation) throws Throwable {
-                EmployeeResponse cur = depts.get(1).getEmployees().get(0);
-                cur.setName(employeeRequest.getName());
-                cur.setPosition(employeeRequest.getPosition());
-                return cur;
-            }
+        when(employeeService.update(1, 1, employeeRequest)).thenAnswer((Answer<EmployeeResponse>) invocation -> {
+            EmployeeResponse cur = depts.get(1).getEmployees().get(0);
+            cur.setName(employeeRequest.getName());
+            cur.setPosition(employeeRequest.getPosition());
+            return cur;
         });
 
         DeptController deptController = new DeptController();

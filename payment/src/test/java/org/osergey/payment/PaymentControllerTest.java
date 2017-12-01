@@ -2,7 +2,6 @@ package org.osergey.payment;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osergey.payment.model.PaymentResponse;
 import org.osergey.payment.model.PaymentRequest;
@@ -51,23 +50,20 @@ public class PaymentControllerTest {
         paymentRequest.setAccount("11-22-33-44-55-66-FG");
 
         PaymentService paymentService = mock(PaymentService.class);
-        when(paymentService.create(1, paymentRequest)).thenAnswer(new Answer<PaymentResponse>() {
-            @Override
-            public PaymentResponse answer(InvocationOnMock invocation) throws Throwable {
-                PaymentResponse payment = new PaymentResponse();
-                payment.setSalary(paymentRequest.getSalary());
-                payment.setAccount(paymentRequest.getAccount());
-                payments.add(payment);
-                return payment;
-            }
+        when(paymentService.create(1, paymentRequest)).thenAnswer((Answer<PaymentResponse>) invocation -> {
+            PaymentResponse payment = new PaymentResponse();
+            payment.setSalary(paymentRequest.getSalary());
+            payment.setAccount(paymentRequest.getAccount());
+            payments.add(payment);
+            return payment;
         });
 
         PaymentController paymentController = new PaymentController();
         ReflectionTestUtils.setField(paymentController, "paymentService", paymentService);
 
-        HttpServletResponse responce = new MockHttpServletResponse();
-        paymentController.create(1, paymentRequest, responce);
-        assertEquals("/payment/1", responce.getHeader("Location"));
+        HttpServletResponse response = new MockHttpServletResponse();
+        paymentController.create(1, paymentRequest, response);
+        assertEquals("/payment/1", response.getHeader("Location"));
         assertEquals(2, payments.size());
         assertEquals(1200, payments.get(1).getSalary());
         assertEquals("11-22-33-44-55-66-FG", payments.get(1).getAccount());
@@ -80,14 +76,11 @@ public class PaymentControllerTest {
         paymentRequest.setAccount("00-00-99-00-FD");
 
         PaymentService paymentService = mock(PaymentService.class);
-        when(paymentService.update(0, paymentRequest)).thenAnswer(new Answer<PaymentResponse>() {
-            @Override
-            public PaymentResponse answer(InvocationOnMock invocation) throws Throwable {
-                PaymentResponse cur = payments.get(0);
-                cur.setSalary(paymentRequest.getSalary());
-                cur.setAccount(paymentRequest.getAccount());
-                return cur;
-            }
+        when(paymentService.update(0, paymentRequest)).thenAnswer((Answer<PaymentResponse>) invocation -> {
+            PaymentResponse cur = payments.get(0);
+            cur.setSalary(paymentRequest.getSalary());
+            cur.setAccount(paymentRequest.getAccount());
+            return cur;
         });
 
         PaymentController paymentController = new PaymentController();
@@ -98,6 +91,7 @@ public class PaymentControllerTest {
         assertEquals("00-00-99-00-FD", ret.getAccount());
     }
 
+    @Test
     public void testDelete() throws  Exception {
         PaymentService paymentService = mock(PaymentService.class);
         PaymentController paymentController = new PaymentController();

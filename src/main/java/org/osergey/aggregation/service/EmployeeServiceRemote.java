@@ -16,7 +16,7 @@ public class EmployeeServiceRemote implements EmployeeService {
 
     private static final String empOne   = "http://localhost:8081/idept/{dept}/employee/{id}";
 
-    private RestTemplate rest = new RestTemplate();
+    private final RestTemplate rest = new RestTemplate();
 
     @PostConstruct
     public void fixPostMethod() {

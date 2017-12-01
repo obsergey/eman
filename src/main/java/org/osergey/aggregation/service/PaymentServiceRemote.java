@@ -14,7 +14,7 @@ public class PaymentServiceRemote implements PaymentService {
 
     private static final String paymentOne = "http://localhost:8083/payment/{id}";
 
-    private RestTemplate rest = new RestTemplate();
+    private final RestTemplate rest = new RestTemplate();
 
     @PostConstruct
     public void fixPostMethod() {
