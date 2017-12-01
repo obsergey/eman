@@ -13,7 +13,6 @@ import javax.persistence.EntityNotFoundException;
 
 @Service("localEmployeeService")
 @ConditionalOnProperty("dept.micro.service")
-@Transactional
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -33,6 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public Employee create(EmployeeRequest employee) {
         Employee entity = new Employee();
         entity.setName(employee.getName());
@@ -41,6 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeResponse update(int id, int dept, EmployeeRequest employee) {
         Employee entity = findChecked(id, dept);
         entity.setName(employee.getName() != null ? employee.getName() : entity.getName());
@@ -49,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public void delete(int id, int dept) {
         employeeRepository.delete(findChecked(id, dept));
     }

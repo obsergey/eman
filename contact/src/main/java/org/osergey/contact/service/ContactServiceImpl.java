@@ -9,26 +9,31 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
-
 @Service("localContactService")
 @ConditionalOnProperty("contact.micro.service")
-@Transactional
 public class ContactServiceImpl implements ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public ContactResponse findOne(int id) {
-        return new ContactResponse(contactRepository.findOne(id));
+    private Contact findChecked(int id) {
+        Contact entity = contactRepository.findOne(id);
+        if(entity == null) {
+            throw new ContactNotFoundException(id);
+        }
+        return entity;
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ContactResponse findOne(int id) {
+        return new ContactResponse(findChecked(id));
+    }
+
+    @Override
+    @Transactional
     public ContactResponse create(int id, ContactRequest contact) {
         if(contactRepository.exists(id)) {
-            throw new EntityExistsException("ContactResponse {" + id + "} already exists");
+            throw new ContactExistsException(id);
         }
         Contact entity = new Contact();
         entity.setId(id);
@@ -38,18 +43,17 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @Transactional
     public ContactResponse update(int id, ContactRequest contact) {
-        Contact entity = contactRepository.findOne(id);
-        if(entity == null) {
-            throw new EntityNotFoundException("Entity {" + id + "} not found");
-        }
+        Contact entity = findChecked(id);
         entity.setName(contact.getName() != null ? contact.getName() : entity.getName());
         entity.setPhone(contact.getPhone() != null ? contact.getPhone() : entity.getPhone());
         return new ContactResponse(contactRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
-        contactRepository.delete(id);
+        contactRepository.delete(findChecked(id));
     }
 }

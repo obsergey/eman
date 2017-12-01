@@ -14,18 +14,24 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
 
 @Service("localDeptService")
 @ConditionalOnProperty("dept.micro.service")
-@Transactional
 public class DeptServiceImpl implements DeptService {
     @Autowired
     private DeptRepository deptRepository;
     @Autowired
     @Qualifier("localEmployeeService")
     private EmployeeService employeeService;
+
+    private Dept findChecked(int id) {
+        Dept entity = deptRepository.findOne(id);
+        if(entity == null) {
+            throw new DeptNotFoundException(id);
+        }
+        return entity;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -40,25 +46,20 @@ public class DeptServiceImpl implements DeptService {
     @Override
     @Transactional(readOnly = true)
     public DeptResponse findOne(int id) {
-        Dept entity = deptRepository.findOne(id);
-        if(entity == null) {
-            throw new EntityNotFoundException("Deportment {" + id + "} not found");
-        }
-        return DeptResponse.deep(entity);
+        return DeptResponse.deep(findChecked(id));
     }
 
     @Override
+    @Transactional
     public int appendEmployee(int id, EmployeeRequest employee) {
-        Dept entity = deptRepository.findOne(id);
-        if(entity == null) {
-            throw new EntityNotFoundException("Deportment {" + id + "} not found");
-        }
+        Dept dept = findChecked(id);
         Employee emp = employeeService.create(employee);
-        emp.setDept(entity);
-        return  emp.getId();
+        emp.setDept(dept);
+        return emp.getId();
     }
 
     @Override
+    @Transactional
     public void removeEmployee(int id, int employeeId) {
         employeeService.delete(employeeId, id);
     }

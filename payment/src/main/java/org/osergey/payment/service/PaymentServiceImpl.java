@@ -9,26 +9,31 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
-
 @Service("localPaymentService")
 @ConditionalOnProperty("payment.micro.service")
-@Transactional
 public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public PaymentResponse findOne(int id) {
-        return new PaymentResponse(paymentRepository.findOne(id));
+    private Payment findChecked(int id) {
+        Payment entity = paymentRepository.findOne(id);
+        if(entity == null) {
+            throw new PaymentNotFoundException(id);
+        }
+        return entity;
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public PaymentResponse findOne(int id) {
+        return new PaymentResponse(findChecked(id));
+    }
+
+    @Override
+    @Transactional
     public PaymentResponse create(int id, PaymentRequest payment) {
         if(paymentRepository.exists(id)) {
-            throw new EntityExistsException("PaymentResponse {" + id + "} already exists");
+            throw new PaymentExistsException(id);
         }
         Payment entity = new Payment();
         entity.setId(id);
@@ -38,18 +43,17 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public PaymentResponse update(int id, PaymentRequest payment) {
-        Payment entity = paymentRepository.findOne(id);
-        if(entity == null) {
-            throw new EntityNotFoundException("PaymentResponse {" + id + "} not found");
-        }
+        Payment entity = findChecked(id);
         entity.setSalary(payment.getSalary() > 0 ? payment.getSalary() : entity.getSalary());
         entity.setAccount(payment.getAccount() != null ? payment.getAccount() : entity.getAccount());
         return new PaymentResponse(paymentRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
-        paymentRepository.delete(id);
+        paymentRepository.delete(findChecked(id));
     }
 }
