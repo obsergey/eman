@@ -26,6 +26,9 @@ public class AggregationServiceImpl implements AggregationService {
 
     @Override
     public DeptLabelListPageResponse findAllDeptLabel(int page, int size) {
+        if(page < 0 || size <= 0) {
+            throw new PaginationBadArgumentsException();
+        }
         return new DeptLabelListPageResponse(deptService.findAll(page, size));
     }
 

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/dept")
@@ -21,7 +22,7 @@ public class AggregationController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
-    public DeptLabelListPageResponse findAllDeptLabel(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public DeptLabelListPageResponse findAllDeptLabel(@RequestParam("page") int page, @Valid @RequestParam("size") int size) {
         log.info("GET /dept/ page " + page + " size " + size);
         return aggregationService.findAllDeptLabel(page, size);
     }
@@ -42,7 +43,7 @@ public class AggregationController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, value = "/{dept}/employee")
-    public void appendEmployee(@PathVariable int dept, @RequestBody EmployeeFullRequest employee, HttpServletResponse response) {
+    public void appendEmployee(@PathVariable int dept, @Valid @RequestBody EmployeeFullRequest employee, HttpServletResponse response) {
         log.info("POST /dept/" + dept + "/employee/ employee " + employee);
         int id = aggregationService.appendEmployee(dept, employee);
         response.addHeader(HttpHeaders.LOCATION, "/dept/"+dept+"/employee/"+id);
@@ -50,7 +51,7 @@ public class AggregationController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.PATCH, value = "/{dept}/employee/{id}")
-    public EmployeeFullResponse updateEmployee(@PathVariable int id, @PathVariable int dept, @RequestBody EmployeeFullRequest employee) {
+    public EmployeeFullResponse updateEmployee(@PathVariable int id, @PathVariable int dept, @Valid @RequestBody EmployeeFullRequest employee) {
         log.info("PATCH /dept/" + dept + "/employee/" + id + "employee" + employee);
         return aggregationService.updateEmployee(id, dept, employee);
     }
