@@ -23,7 +23,7 @@ public class EmployeeServiceRemote implements EmployeeService {
 
     private final RestTemplate rest = new RestTemplate();
 
-    private void throwNotFoundExceptionWnenNeed(HttpClientErrorException e, int id, int dept) {
+    private void throwNotFoundExceptionWhenNeed(HttpClientErrorException e, int id, int dept) {
         if(e.getStatusCode().value() == 404) {
             DeptNotFoundException nex = new DeptNotFoundException(id, dept);
             nex.initCause(e);
@@ -41,7 +41,7 @@ public class EmployeeServiceRemote implements EmployeeService {
         try {
             return rest.getForObject(empOne, EmployeeResponse.class, dept, id);
         } catch (HttpClientErrorException e) {
-            throwNotFoundExceptionWnenNeed(e, id, dept);
+            throwNotFoundExceptionWhenNeed(e, id, dept);
             log.error("Request error", e);
             return null;
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class EmployeeServiceRemote implements EmployeeService {
         try {
             return rest.patchForObject(empOne, employee, EmployeeResponse.class, dept, id);
         } catch (HttpClientErrorException e) {
-            throwNotFoundExceptionWnenNeed(e, id, dept);
+            throwNotFoundExceptionWhenNeed(e, id, dept);
             log.error("Request error", e);
             return null;
         } catch (Exception e) {

@@ -22,6 +22,10 @@ repositories {
 	mavenCentral()
 }
 
+jar {
+	baseName = 'gs-scheduling-tasks'
+	version =  '0.1.0'
+}
 
 dependencies {
 	compile(project('dept'))
