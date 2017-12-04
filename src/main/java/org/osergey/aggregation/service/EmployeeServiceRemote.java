@@ -5,6 +5,8 @@ import org.osergey.dept.model.EmployeeResponse;
 import org.osergey.dept.model.EmployeeRequest;
 import org.osergey.dept.service.DeptNotFoundException;
 import org.osergey.dept.service.EmployeeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,17 +18,17 @@ import javax.annotation.PostConstruct;
 @Service("remoteEmployeeService")
 public class EmployeeServiceRemote implements EmployeeService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmployeeServiceRemote.class);
     private static final String empOne   = "http://localhost:8081/idept/{dept}/employee/{id}";
 
     private final RestTemplate rest = new RestTemplate();
 
-    private RuntimeException wrapNotFoundException(HttpClientErrorException e, int id) {
+    private void throwNotFoundExceptionWnenNeed(HttpClientErrorException e, int id, int dept) {
         if(e.getStatusCode().value() == 404) {
-            DeptNotFoundException nex = new DeptNotFoundException(id);
+            DeptNotFoundException nex = new DeptNotFoundException(id, dept);
             nex.initCause(e);
-            return nex;
+            throw nex;
         }
-        return e;
     }
 
     @PostConstruct
@@ -39,7 +41,12 @@ public class EmployeeServiceRemote implements EmployeeService {
         try {
             return rest.getForObject(empOne, EmployeeResponse.class, dept, id);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id, dept);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return null;
         }
     }
 
@@ -53,7 +60,12 @@ public class EmployeeServiceRemote implements EmployeeService {
         try {
             return rest.patchForObject(empOne, employee, EmployeeResponse.class, dept, id);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id, dept);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return null;
         }
     }
 

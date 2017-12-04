@@ -4,6 +4,8 @@ import org.osergey.contact.model.ContactResponse;
 import org.osergey.contact.model.ContactRequest;
 import org.osergey.contact.service.ContactNotFoundException;
 import org.osergey.contact.service.ContactService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,17 +16,17 @@ import javax.annotation.PostConstruct;
 @Service("remoteContactService")
 public class ContactServiceRemote implements ContactService{
 
+    private static final Logger log = LoggerFactory.getLogger(ContactServiceRemote.class);
     private static final String contactOne  = "http://localhost:8082/contact/{id}";
 
     private final RestTemplate rest = new RestTemplate();
 
-    private RuntimeException wrapNotFoundException(HttpClientErrorException e, int id) {
+    private void throwNotFoundExceptionWnenNeed(HttpClientErrorException e, int id) {
         if(e.getStatusCode().value() == 404) {
             ContactNotFoundException nex = new ContactNotFoundException(id);
             nex.initCause(e);
-            return nex;
+            throw nex;
         }
-        return e;
     }
 
     @PostConstruct
@@ -37,7 +39,12 @@ public class ContactServiceRemote implements ContactService{
         try {
             return rest.getForObject(contactOne, ContactResponse.class, id);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return null;
         }
     }
 
@@ -46,7 +53,12 @@ public class ContactServiceRemote implements ContactService{
         try {
             return rest.getForObject("http://localhost:8082" + rest.postForLocation(contactOne, contact, id), ContactResponse.class);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return  null;
         }
     }
 
@@ -55,7 +67,12 @@ public class ContactServiceRemote implements ContactService{
         try {
             return rest.patchForObject(contactOne, contact, ContactResponse.class, id);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return  null;
         }
     }
 

@@ -4,6 +4,8 @@ import org.osergey.payment.model.PaymentResponse;
 import org.osergey.payment.model.PaymentRequest;
 import org.osergey.payment.service.PaymentNotFoundException;
 import org.osergey.payment.service.PaymentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,17 +16,17 @@ import javax.annotation.PostConstruct;
 @Service("remotePaymentService")
 public class PaymentServiceRemote implements PaymentService {
 
+    private static final Logger log = LoggerFactory.getLogger(PaymentServiceRemote.class);
     private static final String paymentOne = "http://localhost:8083/payment/{id}";
 
     private final RestTemplate rest = new RestTemplate();
 
-    private RuntimeException wrapNotFoundException(HttpClientErrorException e, int id) {
+    private void throwNotFoundExceptionWnenNeed(HttpClientErrorException e, int id) {
         if(e.getStatusCode().value() == 404) {
             PaymentNotFoundException nex = new PaymentNotFoundException(id);
             nex.initCause(e);
-            return nex;
+            throw nex;
         }
-        return e;
     }
 
     @PostConstruct
@@ -37,7 +39,12 @@ public class PaymentServiceRemote implements PaymentService {
         try {
             return rest.getForObject(paymentOne, PaymentResponse.class, id);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return  null;
         }
     }
 
@@ -46,7 +53,12 @@ public class PaymentServiceRemote implements PaymentService {
         try {
             return rest.getForObject("http://localhost:8083" + rest.postForLocation(paymentOne, payment, id), PaymentResponse.class);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return null;
         }
     }
 
@@ -55,7 +67,12 @@ public class PaymentServiceRemote implements PaymentService {
         try {
             return rest.patchForObject(paymentOne, payment, PaymentResponse.class, id);
         } catch (HttpClientErrorException e) {
-            throw wrapNotFoundException(e, id);
+            throwNotFoundExceptionWnenNeed(e, id);
+            log.error("Request error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Request error", e);
+            return null;
         }
     }
 

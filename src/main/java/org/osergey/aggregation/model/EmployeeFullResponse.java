@@ -16,10 +16,10 @@ public class EmployeeFullResponse {
     private String account;
 
     public EmployeeFullResponse(EmployeeResponse employee, ContactResponse contact, PaymentResponse payment) {
-        name = contact.getName();
-        position = employee.getPosition();
-        phone = contact.getPhone();
-        salary = payment.getSalary();
-        account = payment.getAccount();
+        name = contact == null ? (employee == null ? "unknown" : employee.getName()) : contact.getName();
+        position = employee == null ? "unknown" : employee.getPosition();
+        phone = contact == null ? "unknown" : contact.getPhone();
+        salary = payment == null ? 0 : payment.getSalary();
+        account = payment == null ? "unknown" :  payment.getAccount();
     }
 }
