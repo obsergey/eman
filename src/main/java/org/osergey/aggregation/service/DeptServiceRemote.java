@@ -3,9 +3,11 @@ package org.osergey.aggregation.service;
 import org.osergey.dept.model.DeptListPageResponse;
 import org.osergey.dept.model.DeptResponse;
 import org.osergey.dept.model.EmployeeRequest;
+import org.osergey.dept.service.DeptNotFoundException;
 import org.osergey.dept.service.DeptService;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -21,10 +23,18 @@ public class DeptServiceRemote implements DeptService {
 
     private final RestTemplate rest = new RestTemplate();
 
+    private RuntimeException wrapNotFoundException(HttpClientErrorException e, int id) {
+        if(e.getStatusCode().value() == 404) {
+            DeptNotFoundException nex = new DeptNotFoundException(id);
+            nex.initCause(e);
+            return nex;
+        }
+        return e;
+    }
+
     @PostConstruct
     public void fixPostMethod() {
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        rest.setRequestFactory(requestFactory);
+        rest.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
 
     private int lastSegmentInt(URI uri) {
@@ -40,12 +50,20 @@ public class DeptServiceRemote implements DeptService {
 
     @Override
     public DeptResponse findOne(int id) {
-        return rest.getForObject(deptOne, DeptResponse.class, id);
+        try {
+            return rest.getForObject(deptOne, DeptResponse.class, id);
+        } catch (HttpClientErrorException e) {
+            throw wrapNotFoundException(e, id);
+        }
     }
 
     @Override
     public int appendEmployee(int id, EmployeeRequest employee) {
-        return lastSegmentInt(rest.postForLocation(empRoot, employee, id));
+        try {
+            return lastSegmentInt(rest.postForLocation(empRoot, employee, id));
+        } catch (HttpClientErrorException e) {
+            throw wrapNotFoundException(e, id);
+        }
     }
 
     @Override

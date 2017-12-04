@@ -3,9 +3,11 @@ package org.osergey.aggregation.service;
 import org.osergey.dept.domain.Employee;
 import org.osergey.dept.model.EmployeeResponse;
 import org.osergey.dept.model.EmployeeRequest;
+import org.osergey.dept.service.DeptNotFoundException;
 import org.osergey.dept.service.EmployeeService;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -18,15 +20,27 @@ public class EmployeeServiceRemote implements EmployeeService {
 
     private final RestTemplate rest = new RestTemplate();
 
+    private RuntimeException wrapNotFoundException(HttpClientErrorException e, int id) {
+        if(e.getStatusCode().value() == 404) {
+            DeptNotFoundException nex = new DeptNotFoundException(id);
+            nex.initCause(e);
+            return nex;
+        }
+        return e;
+    }
+
     @PostConstruct
     public void fixPostMethod() {
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        rest.setRequestFactory(requestFactory);
+        rest.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
 
     @Override
     public EmployeeResponse findOne(int id, int dept) {
-        return rest.getForObject(empOne, EmployeeResponse.class, dept, id);
+        try {
+            return rest.getForObject(empOne, EmployeeResponse.class, dept, id);
+        } catch (HttpClientErrorException e) {
+            throw wrapNotFoundException(e, id);
+        }
     }
 
     @Override
@@ -36,7 +50,11 @@ public class EmployeeServiceRemote implements EmployeeService {
 
     @Override
     public EmployeeResponse update(int id, int dept, EmployeeRequest employee) {
-        return rest.patchForObject(empOne, employee, EmployeeResponse.class, dept, id);
+        try {
+            return rest.patchForObject(empOne, employee, EmployeeResponse.class, dept, id);
+        } catch (HttpClientErrorException e) {
+            throw wrapNotFoundException(e, id);
+        }
     }
 
     @Override
