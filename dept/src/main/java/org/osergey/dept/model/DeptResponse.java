@@ -10,11 +10,13 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class DeptResponse {
+    private int id;
     private String name;
     private String description;
     private List<EmployeeResponse> employees;
 
     public DeptResponse(Dept dept) {
+        id = dept.getId();
         name = dept.getName();
         description = dept.getDescription();
     }
