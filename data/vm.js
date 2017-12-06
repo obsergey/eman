@@ -7,7 +7,7 @@ function AggPagination(data) {
 }
 
 function DeptLabel(data) {
-	this.id = data.id
+	this.id = data.id;
     this.name = data.name;
     this.description = data.description;
 }
@@ -45,9 +45,9 @@ function AggregationServiceMock() {
 	self.processed = ko.observable(false);
 	self.errmessage = ko.observable();
 	self.setErrMessage = function(xhdr) {
-		if(xhdr.status != 201 && xhdr.status != 204)
-			self.errmessage(xhdr.status + ": " + (xhdr.responseJSON == null ? "" : xhdr.responseJSON.message));
-	}
+		if(xhdr.status !== 201 && xhdr.status !== 204)
+			self.errmessage(xhdr.status + ": " + (xhdr.responseJSON === null ? "" : xhdr.responseJSON.message));
+	};
     self.findAllDeptLabel = function(allDeptLabel, page, size) {
 		console.log("service findAllDeptLabel page %s size %s", page, size);
 		$.ajax({ method: "GET", url: "/dept", data: { "page": page, "size": size },
@@ -80,7 +80,7 @@ function AggregationServiceMock() {
 		$.ajax({ method: "POST", url: "/dept/" + dept + "/employee", data: ko.toJSON(employee()), 
 			dataType: 'json', contentType: "application/json; charset=utf-8",
 			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			error: function(xhdr) { self.setErrMessage(xhdr); if(xhdr.status == 201) location.hash = "dept/" + dept },
+			error: function(xhdr) { self.setErrMessage(xhdr); if(xhdr.status === 201) location.hash = "dept/" + dept },
 			complete: function() { self.processed(false) }
 		})
 	};
@@ -98,7 +98,7 @@ function AggregationServiceMock() {
 		console.log("service removeEmployee id %s dept %s", emp.id, dept);
 		$.ajax({ method: "DELETE", url: "/dept/" + dept + "/employee/" + emp.id,
 			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			success: function() { if(oneDeptDetail() != null) oneDeptDetail().employees.remove(emp) },
+			success: function() { if(oneDeptDetail() !== null) oneDeptDetail().employees.remove(emp) },
 			error: function(xhdr) { self.setErrMessage(xhdr) },
 			complete: function() { self.processed(false) }
 		})		
@@ -119,31 +119,31 @@ var DeptsViewModel = function DeptsViewModel() {
 	
 	self.newEmployee = function() {
 		location.hash = "dept/" + self.deptId() + "/employee/new";
-	}
+	};
 	self.editDept = function(dept) {
 		location.hash = "dept/" + dept.id
-	}
+	};
 	self.editEmployee = function(emp) {
 		location.hash = "dept/" + self.deptId() + "/employee/" + emp.id;
-	}
+	};
 	self.cancelEditEmployee = function() {
 		location.hash = "dept/" + self.deptId();
-	}
+	};
 	self.prevPage = function() {
 		location.hash = "dl/" + (Number(self.allDeptLabel().pagination.current) - 2);
-	}
+	};
 	self.nextPage = function() {
 		location.hash = "dl/" + (Number(self.allDeptLabel().pagination.current));
-	}
+	};
 	self.applyEditEmployee = function() {
-		if(self.employeeId() == "new")
+		if(self.employeeId() === "new")
 			self.service().appendEmployee(self.employee, self.deptId());
 		else
 			self.service().updateEmployee(self.employee, self.employeeId(), self.deptId());
-	}
+	};
 	self.removeEmployee = function(emp) {
 		self.service().removeEmployee(self.oneDeptDetail, emp, self.deptId());
-	}
+	};
 
 	
 	Sammy(function() {
@@ -152,7 +152,7 @@ var DeptsViewModel = function DeptsViewModel() {
 			self.employeeId(this.params.employeeId);
 			self.allDeptLabel(null);
 			self.oneDeptDetail(null);
-			if(self.employeeId() == "new")
+			if(self.employeeId() === "new")
 				self.employee(new EmployeeFull({}));
 			else
 				self.service().findOneEmployee(self.employee, self.employeeId(), self.deptId());
