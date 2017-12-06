@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<script type="text/javascript" src="/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="/knockout-3.4.2.min.js"></script>
+		<script type="text/javascript" src="/sammy-0.7.6.min.js"></script>
+	</head>
+	<body>
+		<div data-bind="with: allDeptLabel">
+			<div data-bind="foreach: deptLabels">
+				<h3 data-bind="text: name, click: $root.editDept"></h3>
+				<p data-bind="text: description"></p>
+			</div>
+			<div data-bind="with: pagination">
+				<button data-bind="enable: Number(current) > 1, click: $root.prevPage">Prev</button>
+				<b><span data-bind="text: current"></span> of <span data-bind="text: pages"></b>
+				<button data-bind="enable: Number(current) < Number(pages), click: $root.nextPage">Next</button>
+			</div>
+		</div>
+		<div data-bind="with: oneDeptDetail">
+			<h1 data-bind="text: name"></h1>
+			<p data-bind="text: description"></p>
+			<div data-bind="foreach: employees">
+				<b data-bind="text: name, click: $root.editEmployee"></b>
+				<span data-bind="text: position"></span>
+				<button data-bind="click: $root.removeEmployee">Remove</button>
+				<br />
+			</div>
+			<button data-bind="click: $root.newEmployee">Add</button>
+		</div>
+		<div data-bind="with: employee">
+			<p>Name: <input data-bind="value: name" /></p>
+			<p>Position: <input data-bind="value: position" /></p>
+			<p>Phone: <input data-bind="value: phone" /></p>
+			<p>Salary: <input data-bind="value: salary" /></p>
+			<p>Account: <input data-bind="value: account" /></p>
+			<button data-bind="click: $root.cancelEditEmployee">Cancel</button>
+			<button data-bind="click: $root.applyEditEmployee">Ok</button>
+		</div>
+		<div data-bind="with: service">
+			<h1 data-bind="visible: processed()">Proceess</h1>
+			<p data-bind="visible: errmessage">Error: <b data-bind="text: errmessage"></b></p>
+		</div>
+		
+		<script type="text/javascript" src="/vm.js"></script>
+	</body>
+</html>
