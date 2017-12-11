@@ -116,7 +116,7 @@ var DeptsViewModel = function DeptsViewModel() {
 	self.allDeptLabel = ko.observable();
 	self.oneDeptDetail = ko.observable();
 	self.employee = ko.observable();
-	
+
 	self.newEmployee = function() {
 		location.hash = "dept/" + self.deptId() + "/employee/new";
 	};
@@ -153,7 +153,9 @@ var DeptsViewModel = function DeptsViewModel() {
 			self.allDeptLabel(null);
 			self.oneDeptDetail(null);
 			if(self.employeeId() === "new")
-				self.employee(new EmployeeFull({}));
+				self.employee(new EmployeeFull({
+                    name: "", phone: "", position: "", salary: 0, account: ""
+                }));
 			else
 				self.service().findOneEmployee(self.employee, self.employeeId(), self.deptId());
 		});
