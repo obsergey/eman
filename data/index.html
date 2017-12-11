@@ -3,44 +3,85 @@
 		<script type="text/javascript" src="/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="/knockout-3.4.2.min.js"></script>
 		<script type="text/javascript" src="/sammy-0.7.6.min.js"></script>
+		<script type="text/javascript" src="/sammy-0.7.6.min.js"></script>
+		<link rel="stylesheet" href="/material.min.css" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 	</head>
 	<body>
-		<div data-bind="with: allDeptLabel">
-			<div data-bind="foreach: deptLabels">
-				<h3 data-bind="text: name, click: $root.editDept"></h3>
-				<p data-bind="text: description"></p>
-			</div>
-			<div data-bind="with: pagination">
-				<button data-bind="enable: Number(current) > 1, click: $root.prevPage">Prev</button>
-				<b><span data-bind="text: current"></span> of <span data-bind="text: pages"></b>
-				<button data-bind="enable: Number(current) < Number(pages), click: $root.nextPage">Next</button>
-			</div>
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+			<header class="mdl-layout__header">
+				<div class="mdl-layout__header-row">
+					<div data-bind="with: oneDeptDetail">
+						<a href="#dl" class="mdl-button mdl-js-button mdl-button--icon">
+							<i class="material-icons">chevron_left</i>
+						</a>
+					</div>
+					<div data-bind="with: employee">
+						<a href="#" data-bind="click: $root.cancelEditEmployee" class="mdl-button mdl-js-button mdl-button--icon">
+							<i class="material-icons">chevron_left</i>
+						</a>
+					</div>
+					<div data-bind="with: allDeptLabel">
+						<span class="mdl-layout__title">Departments</span>
+					</div>
+					<div data-bind="with: oneDeptDetail">
+						<span class="mdl-layout__title" data-bind="text: name"></span>
+					</div>
+				</div>
+			</header>
+			<main class="mdl-layout__content" style="padding: 20">
+				<div data-bind="with: allDeptLabel">
+					<div data-bind="with: pagination" style="padding: 10">
+						<button data-bind="enable: Number(current) > 1, click: $root.prevPage" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Prev</button>
+						<b><span data-bind="text: current"></span> of <span data-bind="text: pages"></span></b>
+						<button data-bind="enable: Number(current) < Number(pages), click: $root.nextPage" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Next</button>
+					</div>
+					<div >
+						<ul class="demo-list-two mdl-list" data-bind="foreach: deptLabels">
+							<li class="mdl-list__item mdl-list__item--two-line" data-bind="click: $root.editDept">
+								<span class="mdl-list__item-primary-content">
+								  <span data-bind="text: name"></span>
+								  <span class="mdl-list__item-sub-title" data-bind="text: description"></span>
+								</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div data-bind="with: oneDeptDetail">
+					<p data-bind="text: description"></p>
+					<ul class="demo-list-two mdl-list" data-bind="foreach: employees">
+						<li class="mdl-list__item mdl-list__item--two-line">
+							<span class="mdl-list__item-primary-content">
+							  <i class="material-icons mdl-list__item-avatar">person</i>
+							  <span data-bind="text: name, click: $root.editEmployee"></span>
+							  <span class="mdl-list__item-sub-title" data-bind="text: position"></span>
+							</span>
+							<span class="mdl-list__item-secondary-content">
+							  <a class="mdl-list__item-secondary-action" href="#" data-bind="click: $root.removeEmployee"><i class="material-icons">delete</i></a>
+							</span>
+						</li>
+					</ul>
+					<button data-bind="click: $root.newEmployee" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+						<i class="material-icons">add</i>
+					</button>
+				</div>
+				<div data-bind="with: employee">
+					<table>
+						<tr><td>Name: </td><td><input data-bind="value: name" /></td><td><i style="color: red" data-bind="visible: name().length < 4">Name is too short</i></td></tr>
+						<tr><td>Position: </td><td><input data-bind="value: position" /></td><td><i style="color: red" data-bind="visible: $root.employeeId() == 'new' && position().length == 0">Requiered fileld</i></td></tr>
+						<tr><td>Phone: </td><td><input data-bind="value: phone" /></td><td><i style="color: red" data-bind="visible: $root.employeeId() == 'new' && phone().length == 0">Requiered fileld</i></td></tr>
+						<tr><td>Salary: </td><td><input data-bind="value: salary" /></td><td><i style="color: red" data-bind="visible: Number(salary() < 100 || Number(salary()) > 1000)">Salary should be from 100 to 1000</i></td></tr>
+						<tr><td>Account: </td><td><input data-bind="value: account" /></td><td><i style="color: red" data-bind="visible: account().length < 8 || account().length > 24">Account contain 8-24 chars</i></td></tr>
+					</table>
+					<br />
+					<button data-bind="click: $root.applyEditEmployee, enable: name().length > 4 && Number(salary()) >= 100 && Number(salary()) <= 1000 && ($root.employeeId() != 'new' || phone().length != 0 && position().length != 0) && account().length >= 8 && account().length <= 24" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Ok</button>
+				</div>
+				<div data-bind="with: service">
+					<h1 data-bind="visible: processed()">Proceess</h1>
+					<p data-bind="visible: errmessage">Error: <b data-bind="text: errmessage"></b></p>
+				</div>
+			</main>
 		</div>
-		<div data-bind="with: oneDeptDetail">
-			<h1 data-bind="text: name"></h1>
-			<p data-bind="text: description"></p>
-			<div data-bind="foreach: employees">
-				<b data-bind="text: name, click: $root.editEmployee"></b>
-				<span data-bind="text: position"></span>
-				<button data-bind="click: $root.removeEmployee">Remove</button>
-				<br />
-			</div>
-			<button data-bind="click: $root.newEmployee">Add</button>
-		</div>
-		<div data-bind="with: employee">
-			<p>Name: <input data-bind="value: name" /></p>
-			<p>Position: <input data-bind="value: position" /></p>
-			<p>Phone: <input data-bind="value: phone" /></p>
-			<p>Salary: <input data-bind="value: salary" /></p>
-			<p>Account: <input data-bind="value: account" /></p>
-			<button data-bind="click: $root.cancelEditEmployee">Cancel</button>
-			<button data-bind="click: $root.applyEditEmployee">Ok</button>
-		</div>
-		<div data-bind="with: service">
-			<h1 data-bind="visible: processed()">Proceess</h1>
-			<p data-bind="visible: errmessage">Error: <b data-bind="text: errmessage"></b></p>
-		</div>
-		
 		<script type="text/javascript" src="/vm.js"></script>
 	</body>
 </html>
