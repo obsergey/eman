@@ -116,6 +116,7 @@ var DeptsViewModel = function DeptsViewModel() {
 	self.allDeptLabel = ko.observable();
 	self.oneDeptDetail = ko.observable();
 	self.employee = ko.observable();
+	self.vneed = ko.observable(0);
 
 	self.newEmployee = function() {
 		location.hash = "dept/" + self.deptId() + "/employee/new";
@@ -136,8 +137,12 @@ var DeptsViewModel = function DeptsViewModel() {
 		location.hash = "dl/" + (Number(self.allDeptLabel().pagination.current));
 	};
 	self.applyEditEmployee = function() {
-		if(self.employeeId() === "new")
-			self.service().appendEmployee(self.employee, self.deptId());
+		if(self.employeeId() === "new") {
+            var last = self.vneed();
+            self.vneed(1);
+            if(!last) return;
+            self.service().appendEmployee(self.employee, self.deptId());
+        }
 		else
 			self.service().updateEmployee(self.employee, self.employeeId(), self.deptId());
 	};
@@ -152,6 +157,7 @@ var DeptsViewModel = function DeptsViewModel() {
 			self.employeeId(this.params.employeeId);
 			self.allDeptLabel(null);
 			self.oneDeptDetail(null);
+            self.vneed(0);
 			if(self.employeeId() === "new")
 				self.employee(new EmployeeFull({
                     name: "", phone: "", position: "", salary: 0, account: ""

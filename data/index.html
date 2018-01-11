@@ -67,14 +67,14 @@
 				</div>
 				<div data-bind="with: employee">
 					<table>
-						<tr><td>Name: </td><td><input data-bind="value: name" /></td><td><i style="color: red" data-bind="visible: name().length < 4">Name is too short</i></td></tr>
-						<tr><td>Position: </td><td><input data-bind="value: position" /></td><td><i style="color: red" data-bind="visible: $root.employeeId() == 'new' && position().length == 0">Requiered fileld</i></td></tr>
-						<tr><td>Phone: </td><td><input data-bind="value: phone" /></td><td><i style="color: red" data-bind="visible: $root.employeeId() == 'new' && phone().length == 0">Requiered fileld</i></td></tr>
-						<tr><td>Salary: </td><td><input data-bind="value: salary" /></td><td><i style="color: red" data-bind="visible: Number(salary() < 100 || Number(salary()) > 1000)">Salary should be from 100 to 1000</i></td></tr>
-						<tr><td>Account: </td><td><input data-bind="value: account" /></td><td><i style="color: red" data-bind="visible: account().length < 8 || account().length > 24">Account contain 8-24 chars</i></td></tr>
+						<tr><td>Name: </td><td><input data-bind="value: name" /></td><td><i style="color: red" data-bind="visible: $root.vneed() && name().length < 4">Name is too short</i></td></tr>
+						<tr><td>Position: </td><td><input data-bind="value: position" /></td><td><i style="color: red" data-bind="visible: $root.vneed() && $root.employeeId() == 'new' && position().length == 0">Requiered fileld</i></td></tr>
+						<tr><td>Phone: </td><td><input data-bind="value: phone" /></td><td><i style="color: red" data-bind="visible: $root.vneed() && $root.employeeId() == 'new' && phone().length == 0">Requiered fileld</i></td></tr>
+						<tr><td>Salary: </td><td><input data-bind="value: salary" /></td><td><i style="color: red" data-bind="visible: $root.vneed() && (Number(salary() < 100 || Number(salary()) > 1000))">Salary should be from 100 to 1000</i></td></tr>
+						<tr><td>Account: </td><td><input data-bind="value: account" /></td><td><i style="color: red" data-bind="visible: $root.vneed() && (account().length < 8 || account().length > 24)">Account contain 8-24 chars</i></td></tr>
 					</table>
 					<br />
-					<button data-bind="click: $root.applyEditEmployee, enable: name().length > 4 && Number(salary()) >= 100 && Number(salary()) <= 1000 && ($root.employeeId() != 'new' || phone().length != 0 && position().length != 0) && account().length >= 8 && account().length <= 24" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Ok</button>
+					<button data-bind="click: $root.applyEditEmployee, enable: !$root.vneed() || name().length > 4 && Number(salary()) >= 100 && Number(salary()) <= 1000 && ($root.employeeId() != 'new' || phone().length != 0 && position().length != 0) && account().length >= 8 && account().length <= 24" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Ok</button>
 				</div>
 				<div data-bind="with: service">
 					<h1 data-bind="visible: processed()">Proceess</h1>
