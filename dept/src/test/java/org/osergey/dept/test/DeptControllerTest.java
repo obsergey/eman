@@ -40,22 +40,6 @@ public class DeptControllerTest {
     }
 
     @Test
-    public void findAllDept() {
-        DeptService deptService = mock(DeptService.class);
-        List<DeptResponse> page = new ArrayList<>();
-        page.add(depts.get(0));
-        when(deptService.findAll(0, 1)).thenReturn(page);
-
-        DeptController deptController = new DeptController();
-        ReflectionTestUtils.setField(deptController, "deptService", deptService);
-
-        List<DeptResponse> depts = deptController.findAllDept(0, 1);
-        assertEquals(1, depts.size());
-        assertEquals("Dep 1", depts.get(0).getName());
-        assertEquals("Dep 1 description", depts.get(0).getDescription());
-    }
-
-    @Test
     public void findOneDep() {
         DeptService deptService = mock(DeptService.class);
         when(deptService.findOne(1)).thenReturn(depts.get(1));
