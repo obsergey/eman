@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.8.RELEASE'
+		springBootVersion = '1.4.0.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -11,7 +11,7 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
+apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 group = 'org.osergey'
 version = '0.0.1-SNAPSHOT'
