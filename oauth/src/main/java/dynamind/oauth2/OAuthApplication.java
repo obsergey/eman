@@ -137,7 +137,7 @@ public class OAuthApplication {
                     .withClient("confidential").secret("secret")
                     .authorizedGrantTypes("client_credentials", "authorization_code", "refresh_token")
                     .scopes("read", "write")
-                    .redirectUris("http://localhost:8080/client/")
+                    .redirectUris("http://localhost:8085/client/")
 
                     .and()
 
@@ -145,7 +145,7 @@ public class OAuthApplication {
                     .withClient("public") // No secret!
                     .authorizedGrantTypes("implicit")
                     .scopes("read")
-                    .redirectUris("http://localhost:8080/client/")
+                    .redirectUris("http://localhost:8085/client/")
 
                     .and()
 
@@ -154,7 +154,7 @@ public class OAuthApplication {
                     .authorities("ROLE_TRUSTED_CLIENT")
                     .authorizedGrantTypes("client_credentials", "password", "authorization_code", "refresh_token")
                     .scopes("read", "write")
-                    .redirectUris("http://localhost:8080/client/")
+                    .redirectUris("http://localhost:8085/client/")
             ;
         }
 
