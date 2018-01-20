@@ -88,7 +88,8 @@ public class PaymentServiceRemote implements PaymentService {
     @Override
     public PaymentResponse update(int id, PaymentRequest payment) {
         try {
-            return rest.patchForObject(paymentOne, payment, PaymentResponse.class, id);
+            return null;
+            //return rest.patchForObject(paymentOne, payment, PaymentResponse.class, id);
         } catch (HttpClientErrorException e) {
             throwNotFoundExceptionWhenNeed(e, id);
             log.error("Request error", e);

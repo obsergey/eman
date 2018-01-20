@@ -58,7 +58,8 @@ public class EmployeeServiceRemote implements EmployeeService {
     @Override
     public EmployeeResponse update(int id, int dept, EmployeeRequest employee) {
         try {
-            return rest.patchForObject(empOne, employee, EmployeeResponse.class, dept, id);
+            return null;
+            //return rest.patchForObject(empOne, employee, EmployeeResponse.class, dept, id);
         } catch (HttpClientErrorException e) {
             throwNotFoundExceptionWhenNeed(e, id, dept);
             log.error("Request error", e);

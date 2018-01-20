@@ -88,7 +88,8 @@ public class ContactServiceRemote implements ContactService{
     @Override
     public ContactResponse update(int id, ContactRequest contact) {
         try {
-            return rest.patchForObject(contactOne, contact, ContactResponse.class, id);
+            return null;
+            //return rest.patchForObject(contactOne, contact, ContactResponse.class, id);
         } catch (HttpClientErrorException e) {
             throwNotFoundExceptionWhenNeed(e, id);
             log.error("Request error", e);
