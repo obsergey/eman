@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -43,13 +44,14 @@ public class OAuthApplication {
             log.info("Defining inMemoryAuthentication (2 users)");
             auth
                     .inMemoryAuthentication()
+                    .passwordEncoder(new BCryptPasswordEncoder())
 
-                    .withUser("user").password("password")
+                    .withUser("user").password("$2a$10$cwJhSb2EIRmjE74gFm0P/OCmScM2GVsM0Zsij6OaG2JLy9G3Tw1m.")
                     .roles("USER")
 
                     .and()
 
-                    .withUser("admin").password("password")
+                    .withUser("admin").password("$2a$10$cwJhSb2EIRmjE74gFm0P/OCmScM2GVsM0Zsij6OaG2JLy9G3Tw1m.")
                     .roles("USER", "ADMIN")
             ;
         }
