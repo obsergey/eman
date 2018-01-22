@@ -31,8 +31,6 @@ dependencies {
 	compile(project('dept'))
 	compile(project('contact'))
 	compile(project('payment'))
-	compile(project('client'))
-	compile(project('oauth'))
 	compile('org.apache.httpcomponents:httpclient')
 	compile('org.springframework.boot:spring-boot-starter-logging')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')

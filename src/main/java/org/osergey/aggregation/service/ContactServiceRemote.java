@@ -6,13 +6,13 @@ import org.osergey.contact.service.ContactNotFoundException;
 import org.osergey.contact.service.ContactService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.oauth2.client.OAuth2RestOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -22,7 +22,10 @@ public class ContactServiceRemote implements ContactService{
     private static final Logger log = LoggerFactory.getLogger(ContactServiceRemote.class);
     private static final String contactOne  = "http://localhost:8082/contact/{id}";
 
-    private final RestTemplate rest = new RestTemplate();
+    @Autowired
+    @Qualifier("contactRest")
+    private OAuth2RestOperations rest;
+
     private final BlockingQueue<Integer> queue = new LinkedBlockingDeque<>();
 
     private void throwNotFoundExceptionWhenNeed(HttpClientErrorException e, int id) {
@@ -31,11 +34,6 @@ public class ContactServiceRemote implements ContactService{
             nex.initCause(e);
             throw nex;
         }
-    }
-
-    @PostConstruct
-    public void fixPostMethod() {
-        rest.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
 
     @Scheduled(fixedDelay = 5000)

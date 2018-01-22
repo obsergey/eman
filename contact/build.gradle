@@ -27,6 +27,10 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-logging')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
+
+	compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security')
+	compile(group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.0.8.RELEASE')
+
 	runtime('org.postgresql:postgresql')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
