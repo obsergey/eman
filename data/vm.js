@@ -40,73 +40,112 @@ function EmployeeFull(data) {
 
 // service mock
 
-function AggregationServiceMock() {
-	var self = this;
-	self.processed = ko.observable(false);
-	self.errmessage = ko.observable();
-	self.setErrMessage = function(xhdr) {
-		if(xhdr.status !== 201 && xhdr.status !== 204)
-			self.errmessage(xhdr.status + ": " + (xhdr.responseJSON === null ? "" : xhdr.responseJSON.message));
-	};
-    self.findAllDeptLabel = function(allDeptLabel, page, size) {
-		console.log("service findAllDeptLabel page %s size %s", page, size);
-		$.ajax({ method: "GET", url: "/dept", data: { "page": page, "size": size },
-			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			success: function(data) { allDeptLabel(new DeptLabelListPage(data)) },
-			error: function(xhdr) { allDeptLabel(null); self.setErrMessage(xhdr) },
-			complete: function() { self.processed(false) }
-		})
-	};
-    self.findOneDeptDetail = function(oneDeptDetail, dept) {
-		console.log("service findOneDeptDetail dept %s", dept);
-		$.ajax({ method: "GET", url: "/dept/" + dept,
-			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			success: function(data) { oneDeptDetail(new DeptDetail(data)) },
-			error: function(xhdr) { oneDeptDetail(null); self.setErrMessage(xhdr) },
-			complete: function() { self.processed(false) }
-		})
-	};
-    self.findOneEmployee = function(employee, id, dept) {
-		console.log("service findOneEmployee id %s dept %s", id, dept);
-		$.ajax({ method: "GET", url: "/dept/" + dept + "/employee/" + id,
-			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			success: function(data) { employee(new EmployeeFull(data)) },
-			error: function(xhdr) { employee(null); self.setErrMessage(xhdr) },
-			complete: function() { self.processed(false) }
-		})
-	};
-    self.appendEmployee = function(employee, dept) {
-		console.log("service appendEmployee dept %s employee " + employee(), dept);
-		$.ajax({ method: "POST", url: "/dept/" + dept + "/employee", data: ko.toJSON(employee()), 
-			dataType: 'json', contentType: "application/json; charset=utf-8",
-			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			error: function(xhdr) { self.setErrMessage(xhdr); if(xhdr.status === 201) location.hash = "dept/" + dept },
-			complete: function() { self.processed(false) }
-		})
-	};
-    self.updateEmployee = function(employee, id, dept) {
-		console.log("service updateEmployee id %s dept %s employee " + employee(), id, dept);
-		$.ajax({ method: "PATCH", url: "/dept/" + dept + "/employee/" + id, data: ko.toJSON(employee()),
-			dataType: 'json', contentType: "application/json; charset=utf-8",
-			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			success: function(data) { employee(new EmployeeFull(data)); location.hash = "dept/" + dept },
-			error: function(xhdr) { self.setErrMessage(xhdr) },
-			complete: function() { self.processed(false) }
-		})
-	};
-    self.removeEmployee = function(oneDeptDetail, emp, dept) {
-		console.log("service removeEmployee id %s dept %s", emp.id, dept);
-		$.ajax({ method: "DELETE", url: "/dept/" + dept + "/employee/" + emp.id,
-			beforeSend: function() { self.processed(true); self.errmessage(null) },
-			success: function() { if(oneDeptDetail() !== null) oneDeptDetail().employees.remove(emp) },
-			error: function(xhdr) { self.setErrMessage(xhdr) },
-			complete: function() { self.processed(false) }
-		})		
-	}
-}
-
-
 // view model
+
+
+function AggregationServiceMock() {
+    var self = this;
+    self.tokens = ko.observable(null);
+    self.processed = ko.observable(false);
+    self.errmessage = ko.observable();
+    self.logpass = ko.observable({"login":"", "pass":""});
+    self.emptyIfUndefined = function(str) {
+        if(str === undefined)
+            return "";
+        return str;
+    };
+    self.setErrMessage = function(xhdr) {
+        if(xhdr.status !== 201 && xhdr.status !== 204)
+            self.errmessage(xhdr.status + ": " + (xhdr.responseJSON === null ? "" : self.emptyIfUndefined(xhdr.responseJSON.error_description) + self.emptyIfUndefined(xhdr.responseJSON.message)));
+    };
+    self.parseJwt = function (token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    };
+    self.refreshAccessTokenNeed = function() {
+        return self.tokens() !== null && self.parseJwt(self.tokens().access_token).exp > (new Date().valueOf() / 1000) &&
+            self.parseJwt(self.tokens().access_token).exp < (new Date().valueOf() / 1000 + self.tokens().expires_in / 2);
+    };
+    self.usepass = function () {
+        $.ajax({ method: "POST", url: "/oauth/token?grant_type=password&username="+self.logpass().login+"&password="+self.logpass().pass,
+            beforeSend: function(xhdr) { self.processed(true); self.errmessage(null); xhdr.setRequestHeader ("Authorization", "Basic " + btoa("spa:spa")); },
+            error: function(xhdr) { self.setErrMessage(xhdr); self.processed(false) },
+            success: function(data) { self.tokens(data); location.hash = '' },
+            complete: function() { self.processed(false) }
+        })
+    };
+    self.useauth = function (request) {
+        if(self.refreshAccessTokenNeed()) {
+            $.ajax({ method: "POST", url: "/oauth/token?grant_type=refresh_token&refresh_token="+self.tokens().refresh_token,
+                beforeSend: function(xhdr) { xhdr.setRequestHeader ("Authorization", "Basic " + btoa("spa:spa")); },
+                error: function(xhdr) { self.setErrMessage(xhdr); self.processed(false) },
+                success: function(data) { self.tokens(data); request() }
+            })
+        }
+        else
+            request();
+    };
+    self.setAuthHeader = function(xhdr) {
+        if(self.tokens())
+            xhdr.setRequestHeader('Authorization', 'bearer ' + self.tokens().access_token)
+    };
+    self.findAllDeptLabel = function(allDeptLabel, page, size) {
+        console.log("service findAllDeptLabel page %s size %s", page, size);
+        self.useauth(function() { $.ajax({ method: "GET", url: "/dept", data: { "page": page, "size": size },
+            beforeSend: function(xhdr) { self.processed(true); self.errmessage(null); self.setAuthHeader(xhdr) },
+            success: function(data) { allDeptLabel(new DeptLabelListPage(data)) },
+            error: function(xhdr) { allDeptLabel(null); self.setErrMessage(xhdr); if(xhdr.status === 401) self.tokens(null) },
+            complete: function() { self.processed(false) }
+        })})
+    };
+    self.findOneDeptDetail = function(oneDeptDetail, dept) {
+        console.log("service findOneDeptDetail dept %s", dept);
+        self.useauth(function() { $.ajax({ method: "GET", url: "/dept/" + dept,
+            beforeSend: function(xhdr) { self.processed(true); self.errmessage(null); self.setAuthHeader(xhdr) },
+            success: function(data) { oneDeptDetail(new DeptDetail(data)) },
+            error: function(xhdr) { oneDeptDetail(null); self.setErrMessage(xhdr); if(xhdr.status === 401) self.tokens(null) },
+            complete: function() { self.processed(false) }
+        })})
+    };
+    self.findOneEmployee = function(employee, id, dept) {
+        console.log("service findOneEmployee id %s dept %s", id, dept);
+        self.useauth(function() { $.ajax({ method: "GET", url: "/dept/" + dept + "/employee/" + id,
+            beforeSend: function(xhdr) { self.processed(true); self.errmessage(null); self.setAuthHeader(xhdr) },
+            success: function(data) { employee(new EmployeeFull(data)) },
+            error: function(xhdr) { employee(null); self.setErrMessage(xhdr); if(xhdr.status === 401) self.tokens(null) },
+            complete: function() { self.processed(false) }
+        })})
+    };
+    self.appendEmployee = function(employee, dept) {
+        console.log("service appendEmployee dept %s employee " + employee(), dept);
+        self.useauth(function() { $.ajax({ method: "POST", url: "/dept/" + dept + "/employee", data: ko.toJSON(employee()),
+            dataType: 'json', contentType: "application/json; charset=utf-8",
+            beforeSend: function(xhdr) { self.processed(true); self.errmessage(null); self.setAuthHeader(xhdr) },
+            error: function(xhdr) { self.setErrMessage(xhdr); if(xhdr.status === 401) self.tokens(null); if(xhdr.status === 201) location.hash = "dept/" + dept },
+            complete: function() { self.processed(false) }
+        })})
+    };
+    self.updateEmployee = function(employee, id, dept) {
+        console.log("service updateEmployee id %s dept %s employee " + employee(), id, dept);
+        self.useauth(function() { $.ajax({ method: "PATCH", url: "/dept/" + dept + "/employee/" + id, data: ko.toJSON(employee()),
+            dataType: 'json', contentType: "application/json; charset=utf-8",
+            beforeSend: function(xhdr) { self.processed(true); self.errmessage(null); self.setAuthHeader(xhdr) },
+            success: function(data) { employee(new EmployeeFull(data)); location.hash = "dept/" + dept },
+            error: function(xhdr) { self.setErrMessage(xhdr); if(xhdr.status === 401) self.tokens(null) },
+            complete: function() { self.processed(false) }
+        })})
+    };
+    self.removeEmployee = function(oneDeptDetail, emp, dept) {
+        console.log("service removeEmployee id %s dept %s", emp.id, dept);
+        self.useauth(function() { $.ajax({ method: "DELETE", url: "/dept/" + dept + "/employee/" + emp.id,
+            beforeSend: function(xhdr) { self.processed(true); self.errmessage(null); self.setAuthHeader(xhdr) },
+            success: function() { if(oneDeptDetail() !== null) oneDeptDetail().employees.remove(emp) },
+            error: function(xhdr) { self.setErrMessage(xhdr); if(xhdr.status === 401) self.tokens(null) },
+            complete: function() { self.processed(false) }
+        })})
+    }
+}
 
 var DeptsViewModel = function DeptsViewModel() {
 	var self  = this;
@@ -117,6 +156,12 @@ var DeptsViewModel = function DeptsViewModel() {
 	self.oneDeptDetail = ko.observable();
 	self.employee = ko.observable();
 	self.vneed = ko.observable(0);
+
+    this.userName = ko.computed(function() {
+        if(this.service().tokens() === null)
+            return "";
+        return this.service().parseJwt(this.service().tokens().access_token).user_name;
+    }, this);
 
 	self.newEmployee = function() {
 		location.hash = "dept/" + self.deptId() + "/employee/new";
@@ -149,7 +194,9 @@ var DeptsViewModel = function DeptsViewModel() {
 	self.removeEmployee = function(emp) {
 		self.service().removeEmployee(self.oneDeptDetail, emp, self.deptId());
 	};
-
+	self.creditnails = function () {
+	    self.service().usepass();
+    };
 	
 	Sammy(function() {
 		this.get('#dept/:deptId/employee/:employeeId', function() {

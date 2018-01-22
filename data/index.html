@@ -4,6 +4,7 @@
 		<script type="text/javascript" src="/knockout-3.4.2.min.js"></script>
 		<script type="text/javascript" src="/sammy-0.7.6.min.js"></script>
 		<script type="text/javascript" src="/sammy-0.7.6.min.js"></script>
+        <script type="text/javascript" src="/dialog-polyfill.min"></script>
 		<link rel="stylesheet" href="/material.min.css" />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 	</head>
@@ -27,6 +28,41 @@
 					<div data-bind="with: oneDeptDetail">
 						<span class="mdl-layout__title" data-bind="text: name"></span>
 					</div>
+					<div class="mdl-layout-spacer"></div>
+                    <button data-bind="visible: $root.service().tokens() === null" id="show-dialog" type="button" class="mdl-button">Login</button>
+                    <dialog class="mdl-dialog" data-bind="with: service">
+                        <div class="mdl-dialog__content" data-bind="with: logpass">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input data-bind="value: login" class="mdl-textfield__input" type="text" name="mail">
+                                <label class="mdl-textfield__label"></label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input data-bind="value: pass" id="test" class="mdl-textfield__input" type="password" name="password">
+                                <label class="mdl-textfield__label"></label>
+                            </div>
+                        </div>
+                        <div class="mdl-dialog__actions">
+                            <button data-bind="click: $root.creditnails" type="button" class="mdl-button ok">Agree</button>
+                            <button type="button" class="mdl-button close">Disagree</button>
+                        </div>
+                    </dialog>
+                    <a data-bind="visible: $root.service().tokens() !== null" class="mdl-navigation__link" href=""><span data-bind="text: $root.userName"></span></a>
+                    <script>
+                        var dialog = document.querySelector('dialog');
+                        var showDialogButton = document.querySelector('#show-dialog');
+                        if (! dialog.showModal) {
+                            dialogPolyfill.registerDialog(dialog);
+                        }
+                        showDialogButton.addEventListener('click', function() {
+                            dialog.showModal();
+                        });
+                        dialog.querySelector('.close').addEventListener('click', function() {
+                            dialog.close();
+                        });
+                        dialog.querySelector('.ok').addEventListener('click', function() {
+                            dialog.close();
+                        });
+                    </script>
 				</div>
 			</header>
 			<main class="mdl-layout__content" style="padding: 20">

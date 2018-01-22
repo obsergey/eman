@@ -157,6 +157,15 @@ public class OAuthApplication {
                     .authorizedGrantTypes("client_credentials", "password", "authorization_code", "refresh_token")
                     .scopes("read", "write")
                     .redirectUris("http://localhost:8085/client/")
+
+                    .and()
+
+                    .withClient("spa").secret("spa")
+                    .authorizedGrantTypes("password", "refresh_token")
+                    .scopes("read", "write")
+                    .accessTokenValiditySeconds(1800)
+                    .refreshTokenValiditySeconds(86400)
+                    .redirectUris("http://localhost:8085/client/")
             ;
         }
 
